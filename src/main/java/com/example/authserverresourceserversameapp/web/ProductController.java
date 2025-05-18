@@ -2,7 +2,6 @@ package com.example.authserverresourceserversameapp.web;
 
 import com.example.authserverresourceserversameapp.dto.*;
 import com.example.authserverresourceserversameapp.model.Brand;
-import com.example.authserverresourceserversameapp.model.Photo;
 import com.example.authserverresourceserversameapp.model.Type;
 import com.example.authserverresourceserversameapp.service.ProductService;
 import org.springframework.web.bind.annotation.*;
@@ -38,8 +37,8 @@ public class ProductController {
     }
 
     @GetMapping(value = "/product")
-    public ResponseProductDto getProducts(@RequestParam(required = false, defaultValue = "0") long typeId,
-                                          @RequestParam(required = false, defaultValue = "0") long brandId,
+    public ResponseProductDto getProducts(@RequestParam(required = false) Long typeId,
+                                          @RequestParam(required = false) Long brandId,
                                           @RequestParam(required = false, defaultValue = "name") String sort,
                                           @RequestParam(required = false, defaultValue = "ASC") String dir,
                                           @RequestParam(required = false, defaultValue = "0") int page,
@@ -67,10 +66,9 @@ public class ProductController {
         return productService.addPhoto(dto);
     }
 
-    @DeleteMapping("/photo/{id}")
-    public long deletePhoto(@PathVariable long id) {
-        Photo photo = productService.getPhoto(id);
-        return productService.deletePhoto(photo);
+    @DeleteMapping("/photo/{productId}")
+    public long deletePhoto(@PathVariable long productId) {
+        return productService.removePhotos(productId);
     }
 
     @PostMapping("/type")

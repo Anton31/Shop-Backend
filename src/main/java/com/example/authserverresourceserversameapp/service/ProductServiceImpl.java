@@ -1,9 +1,7 @@
 package com.example.authserverresourceserversameapp.service;
 
 import com.example.authserverresourceserversameapp.dto.*;
-import com.example.authserverresourceserversameapp.exception.BrandExistsException;
-import com.example.authserverresourceserversameapp.exception.ProductExistsException;
-import com.example.authserverresourceserversameapp.exception.TypeExistsException;
+import com.example.authserverresourceserversameapp.exception.*;
 import com.example.authserverresourceserversameapp.model.Brand;
 import com.example.authserverresourceserversameapp.model.Photo;
 import com.example.authserverresourceserversameapp.model.Product;
@@ -58,7 +56,7 @@ public class ProductServiceImpl implements ProductService {
      * @return dto with list of products
      */
     @Override
-    public ResponseProductDto getProducts(long typeId, long brandId,
+    public ResponseProductDto getProducts(Long typeId, Long brandId,
                                           String sort, String dir,
                                           int page, int size) {
         ResponseProductDto dto = new ResponseProductDto();
@@ -69,12 +67,12 @@ public class ProductServiceImpl implements ProductService {
         if (sort.equals("brand")) {
             sort = "brand.name";
         }
-        if (typeId == 0 && brandId == 0) {
+        if (typeId == null && brandId == null) {
             products = productRepository.findAll(PageRequest.of(page, size, Sort.Direction.fromString(dir), sort));
-        } else if (typeId > 0 && brandId <= 0) {
+        } else if (typeId != null && brandId == null) {
             products = productRepository.getAllByTypeId(typeId,
                     PageRequest.of(page, size, Sort.Direction.fromString(dir), sort));
-        } else if (typeId <= 0) {
+        } else if (typeId == null) {
             products = productRepository.getAllByBrandId(brandId,
                     PageRequest.of(page, size, Sort.Direction.fromString(dir), sort));
         } else {
@@ -119,7 +117,7 @@ public class ProductServiceImpl implements ProductService {
         List<Brand> brands;
         if (typeId == 0) {
             brands = brandRepository.findAll(Sort.by(Sort.Direction.fromString(dir), sort));
-        } else  {
+        } else {
             brands = brandRepository.getAllByTypesId(typeId, Sort.by(Sort.Direction.fromString(dir), sort));
         }
         return brands;
@@ -178,6 +176,9 @@ public class ProductServiceImpl implements ProductService {
             type = new Type();
         } else {
             type = typeRepository.findById(dto.getId()).orElseThrow(NoSuchElementException::new);
+            if (type.getId() == 1) {
+                throw new TypeNotSelectedCanNotBeUpdatedOrDeletedException();
+            }
         }
         type.setName(dto.getName());
         return typeRepository.save(type).getId();
@@ -199,6 +200,9 @@ public class ProductServiceImpl implements ProductService {
             brand = new Brand();
         } else {
             brand = brandRepository.findById(dto.getId()).orElseThrow(NoSuchElementException::new);
+            if (brand.getId() == 1) {
+                throw new BrandNotSelectedCanNotBeUpdatedOrDeletedException();
+            }
         }
         brand.setName(dto.getName());
         return brandRepository.save(brand).getId();
@@ -213,7 +217,7 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public long deleteProduct(long productId) {
         Product product = productRepository.findById(productId).get();
-        removePhotos(product);
+        removePhotos(productId);
         long id = product.getId();
         Type type = product.getType();
         Brand brand = product.getBrand();
@@ -233,11 +237,8 @@ public class ProductServiceImpl implements ProductService {
     public long addPhoto(PhotoDto dto) {
         Product product = productRepository.findById(dto.getProductId()).get();
         Path photoPath;
+        removePhotos(product.getId());
         for (MultipartFile file : dto.getPhotos()) {
-            Photo photo = photoRepository.findByNameAndProductId(file.getOriginalFilename(), product.getId());
-            if (photo != null) {
-                deletePhoto(photo);
-            }
             Photo newPhoto = new Photo();
             long photoId = photoRepository.save(newPhoto).getId();
             newPhoto.setName(file.getOriginalFilename());
@@ -254,27 +255,31 @@ public class ProductServiceImpl implements ProductService {
     }
 
     /**
-     * deletes photo from database and file system
-     *
-     * @param photo photo to delete
-     * @return id of deleted photo
+     * @param productId
+     * @return
      */
     @Override
-    public long deletePhoto(Photo photo) {
-        long photoId = photo.getId();
-        int index = photo.getUrl().indexOf("photo_");
-        photoRepository.delete(photo);
-        if (index > -1) {
-            String file = photo.getUrl().substring(index);
-            Path path = Paths.get(imageDir + file);
-            if (path.toFile().exists())
-                try {
-                    Files.delete(path);
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
+    public long removePhotos(long productId) {
+        Product product = productRepository.findById(productId).get();
+        List<Photo> photos = new ArrayList<>(product.getPhotos());
+        if (!photos.isEmpty()) {
+            for (Photo photo : photos) {
+                int index = photo.getUrl().indexOf("photo_");
+                product.removePhoto(photo);
+                photoRepository.delete(photo);
+                if (index > -1) {
+                    String file = photo.getUrl().substring(index);
+                    Path path = Paths.get(imageDir + file);
+                    if (path.toFile().exists())
+                        try {
+                            Files.delete(path);
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
+                        }
                 }
+            }
         }
-        return photoId;
+        return product.getId();
     }
 
     /**
@@ -297,6 +302,9 @@ public class ProductServiceImpl implements ProductService {
      */
     @Override
     public long deleteType(long typeId) {
+        if (typeId == 1) {
+            throw new TypeNotSelectedCanNotBeUpdatedOrDeletedException();
+        }
         Type type = typeRepository.findById(typeId).get();
         long id = type.getId();
         typeRepository.deleteById(id);
@@ -311,21 +319,13 @@ public class ProductServiceImpl implements ProductService {
      */
     @Override
     public long deleteBrand(long brandId) {
+        if (brandId == 1) {
+            throw new BrandNotSelectedCanNotBeUpdatedOrDeletedException();
+        }
         Brand brand = brandRepository.findById(brandId).get();
         long id = brand.getId();
         brandRepository.deleteById(id);
         return id;
     }
 
-    /**
-     * removes all photos from particular product
-     *
-     * @param product product from which all photos should be removed
-     */
-    public void removePhotos(Product product) {
-        List<Photo> photos = new ArrayList<>(product.getPhotos());
-        for (Photo photo : photos) {
-            deletePhoto(photo);
-        }
-    }
 }

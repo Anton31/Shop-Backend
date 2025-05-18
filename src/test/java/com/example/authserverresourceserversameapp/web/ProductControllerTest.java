@@ -161,7 +161,7 @@ public class ProductControllerTest {
     @WithMockUser
     public void deletePhotoTest() throws Exception {
         given(productService.getPhoto(anyLong())).willReturn(photo);
-        given(productService.deletePhoto(any(Photo.class))).willReturn(1L);
+        given(productService.removePhotos(anyLong())).willReturn(1L);
         this.mockMvc.perform(delete("/products/photo/1").with(csrf()))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$").value(1L));

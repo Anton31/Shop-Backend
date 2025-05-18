@@ -95,19 +95,13 @@ public class ProductServiceTest {
         files.add(mockMultipartFile);
         photoDto.setPhotos(files);
         given(productRepository.findById(anyLong())).willReturn(product1);
-        given(photoRepository.findByNameAndProductId(anyString(), anyLong())).willReturn(photo);
         given(photoRepository.save(any(Photo.class))).willReturn(photo);
         given(productRepository.save(any(Product.class))).willReturn(product);
         long id = productService.addPhoto(photoDto);
         assertThat(id).isEqualTo(1L);
     }
 
-    @Test
-    public void deletePhotoTest() {
-        doNothing().when(photoRepository).delete(photo);
-        long id = productService.deletePhoto(photo);
-        assertThat(id).isEqualTo(1L);
-    }
+
 
     @Test
     public void getProductsTest() {
@@ -122,7 +116,7 @@ public class ProductServiceTest {
         Page<Product> page = new PageImpl<>(products);
         given(productRepository.findAll(PageRequest.of(0, 10, Sort.Direction.valueOf("ASC"),
                 "name"))).willReturn(page);
-        dto = productService.getProducts(0, 0, "name", "ASC", 0, 10);
+        dto = productService.getProducts(null, null, "name", "ASC", 0, 10);
 
         assertThat(dto.getProducts().size()).isEqualTo(2);
         assertThat(dto.getProducts().get(0).getId()).isEqualTo(1L);
