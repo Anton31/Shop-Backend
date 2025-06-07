@@ -45,6 +45,7 @@ public class AuthorizationServerConfig {
                 .authorizationGrantType(AuthorizationGrantType.REFRESH_TOKEN)
                 .redirectUri("http://localhost:4200")
                 .scope(OidcScopes.OPENID)
+                .scope(OidcScopes.PROFILE)
                 .build();
         return new InMemoryRegisteredClientRepository(registeredClient);
     }
