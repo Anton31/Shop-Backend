@@ -18,6 +18,7 @@ import org.springframework.security.oauth2.core.oidc.OidcScopes;
 import org.springframework.security.oauth2.server.authorization.client.InMemoryRegisteredClientRepository;
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClient;
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClientRepository;
+import org.springframework.security.oauth2.server.authorization.settings.ClientSettings;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.web.cors.CorsConfiguration;
@@ -72,7 +73,7 @@ public class DefaultSecurityConfig {
 
     @Bean
     public RegisteredClientRepository registeredClientRepository() {
-        System.out.println("client");
+
         RegisteredClient client = RegisteredClient.withId(UUID.randomUUID().toString())
                 .clientId("app-client")
                 .clientSecret("$2a$12$MyTjNEL1JGagTDhPTHYaOuFNTkpegx.WFXuZDRlDkH51R.QGfP3Be")
@@ -80,9 +81,23 @@ public class DefaultSecurityConfig {
                 .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
                 .authorizationGrantType(AuthorizationGrantType.REFRESH_TOKEN)
                 .scope(OidcScopes.OPENID)
-                .redirectUri("http://localhost:4200")
+                .redirectUri("http://localhost:4200/products")
                 .build();
-        return new InMemoryRegisteredClientRepository(client);
+
+        RegisteredClient publicClient = RegisteredClient.withId(UUID.randomUUID().toString())
+                .clientId("public-client")
+                .clientAuthenticationMethod(ClientAuthenticationMethod.NONE)
+                .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
+                .authorizationGrantType(AuthorizationGrantType.REFRESH_TOKEN)
+                .redirectUri("http://localhost:4200")
+                .scope(OidcScopes.OPENID)
+                .clientSettings(ClientSettings.builder()
+                        .requireAuthorizationConsent(true)
+                        .requireProofKey(true)
+                        .build()
+                )
+                .build();
+        return new InMemoryRegisteredClientRepository(client, publicClient);
     }
 
     @Bean
