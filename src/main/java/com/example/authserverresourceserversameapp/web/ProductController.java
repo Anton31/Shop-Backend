@@ -29,15 +29,9 @@ public class ProductController {
         return productService.getProductTypes();
     }
 
-    @GetMapping("/productBrand")
+    @GetMapping("/brand")
     public List<Brand> getProductBrands(@RequestParam(required = false) Long typeId) {
         return productService.getProductBrands(typeId);
-    }
-
-    @GetMapping("/brand")
-    public List<Brand> getBrands(@RequestParam(required = false, defaultValue = "ASC") String dir,
-                                 @RequestParam(required = false, defaultValue = "name") String sort) {
-        return productService.getAllBrands(dir, sort);
     }
 
     @GetMapping(value = "/product")

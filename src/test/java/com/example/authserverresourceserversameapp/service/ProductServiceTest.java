@@ -165,7 +165,7 @@ public class ProductServiceTest {
         List<Type> types = new ArrayList<>();
         types.add(type);
         types.add(type1);
-        given(typeRepository.getAllByNameNotLike(anyString(), any(Sort.class))).willReturn(types);
+        given(typeRepository.findAll(any(Sort.class))).willReturn(types);
         List<Type> serviceTypes = productService.getAllTypes("ASC", "name");
         assertThat(serviceTypes).isNotNull();
         assertThat(serviceTypes.size()).isEqualTo(2);
@@ -184,19 +184,6 @@ public class ProductServiceTest {
         TypeExistsException exception = assertThrows(TypeExistsException.class, () -> productService.addType(dto));
         assertEquals("Type with name: \"Car\" already exists!", exception.getMessage());
     }
-
-    @Test
-    public void getBrandsByTypeIdTest() {
-        List<Brand> brands = new ArrayList<>();
-        brands.add(brand);
-        given(brandRepository.getAllByNameNotLike(anyString(), any(Sort.class))).willReturn(brands);
-        List<Brand> serviceBrands = productService.getAllBrands("ASC", "name");
-        assertThat(serviceBrands).isNotNull();
-        assertThat(serviceBrands.size()).isEqualTo(1);
-        assertThat(serviceBrands.get(0).getId()).isEqualTo(1L);
-        assertThat(serviceBrands.get(0).getName()).isEqualTo("Mercedes");
-    }
-
 
     @Test
     public void BrandExistsExceptionTest() {

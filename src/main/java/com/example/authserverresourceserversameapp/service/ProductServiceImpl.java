@@ -95,7 +95,7 @@ public class ProductServiceImpl implements ProductService {
      */
     @Override
     public List<Type> getAllTypes(String dir, String sort) {
-        return typeRepository.getAllByNameNotLike("none", Sort.by(Sort.Direction.fromString(dir), sort));
+        return typeRepository.findAll(Sort.by(Sort.Direction.fromString(dir), sort));
     }
 
     /**
@@ -118,16 +118,6 @@ public class ProductServiceImpl implements ProductService {
 
 
     /**
-     * gets all brands from database
-     *
-     * @return list of brands
-     */
-    @Override
-    public List<Brand> getAllBrands(String dir, String sort) {
-        return brandRepository.getAllByNameNotLike("none", Sort.by(Sort.Direction.fromString(dir), sort));
-    }
-
-    /**
      * adds new product to database or updates existing
      *
      * @param dto dto for adding new product or updating existing product
@@ -135,28 +125,30 @@ public class ProductServiceImpl implements ProductService {
      */
     public long addProduct(ProductDto dto) {
         Product product;
-        Type type = typeRepository.findById(dto.getTypeId()).orElseThrow(NoSuchElementException::new);
-        Brand brand = brandRepository.findById(dto.getBrandId()).orElseThrow(NoSuchElementException::new);
+        Type type = null;
+        Brand brand = null;
+        if (dto.getTypeId() > 0) {
+            type = typeRepository.findById(dto.getTypeId()).orElseThrow(NoSuchElementException::new);
+        }
+        if (dto.getBrandId() > 0) {
+            brand = brandRepository.findById(dto.getBrandId()).orElseThrow(NoSuchElementException::new);
+        }
         if (dto.getId() == null) {
             if (productRepository.findByName(dto.getName()) != null) {
                 throw new ProductExistsException(dto.getName());
             }
             product = new Product();
-            if (!type.getBrands().contains(brand)) {
+            if (type != null) {
+                type.addProduct(product);
+            }
+            if (brand != null) {
+                brand.addProduct(product);
+            }
+            if (type != null && brand != null && !type.getBrands().contains(brand)) {
                 type.addBrand(brand);
             }
-            type.addProduct(product);
-            brand.addProduct(product);
         } else {
             product = productRepository.findById(dto.getId()).orElseThrow(NoSuchElementException::new);
-            Type productType = product.getType();
-            Brand productBrand = product.getBrand();
-            productType.removeProduct(product);
-            productBrand.removeProduct(product);
-            productType.removeBrand(productBrand);
-            type.addProduct(product);
-            brand.addProduct(product);
-            type.addBrand(brand);
         }
         product.setName(dto.getName());
         product.setPrice(dto.getPrice());
