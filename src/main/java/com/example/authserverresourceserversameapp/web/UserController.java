@@ -52,7 +52,7 @@ public class UserController {
             return null;
         } else {
             User user = userService.findByUsername(principal.getName());
-            return new UserInfo(user.getUsername(), user.getEmail(), user.getRole().getName());
+            return new UserInfo(user.getUsername(), user.getRole().getName());
         }
     }
 

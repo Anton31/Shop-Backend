@@ -3,12 +3,10 @@ package com.example.authserverresourceserversameapp.dto;
 
 public class UserInfo {
     private String username;
-    private String email;
     private String role;
 
-    public UserInfo(String username, String email, String role) {
+    public UserInfo(String username, String role) {
         this.username = username;
-        this.email = email;
         this.role = role;
     }
 
@@ -18,14 +16,6 @@ public class UserInfo {
 
     public void setUsername(String username) {
         this.username = username;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
     }
 
     public String getRole() {

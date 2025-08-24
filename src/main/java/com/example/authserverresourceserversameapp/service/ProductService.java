@@ -13,11 +13,11 @@ public interface ProductService {
     ResponseProductDto getProducts(Long typeId, Long brandId, String sort,
                                    String dir, int page, int size);
 
-    List<Type> getAllTypes(String dir, String sort);
+    List<Type> getAllTypes(String dir);
 
     List<Type> getProductTypes();
 
-    List<Brand> getProductBrands(Long typeId);
+    List<Brand> getProductBrands(Long typeId, String dir);
 
     long addProduct(ProductDto dto);
 

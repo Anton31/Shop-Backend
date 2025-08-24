@@ -94,8 +94,8 @@ public class ProductServiceImpl implements ProductService {
      * @return list of types
      */
     @Override
-    public List<Type> getAllTypes(String dir, String sort) {
-        return typeRepository.findAll(Sort.by(Sort.Direction.fromString(dir), sort));
+    public List<Type> getAllTypes(String dir) {
+        return typeRepository.findAll(Sort.by(Sort.Direction.fromString(dir), "name"));
     }
 
     /**
@@ -109,11 +109,11 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public List<Brand> getProductBrands(Long typeId) {
+    public List<Brand> getProductBrands(Long typeId, String dir) {
         if (typeId == null) {
-            return brandRepository.findAll();
+            return brandRepository.findAll(Sort.by(Sort.Direction.fromString(dir), "name"));
         }
-        return brandRepository.getAllByTypesId(typeId);
+        return brandRepository.getAllByTypesId(typeId, Sort.by(Sort.Direction.fromString(dir), "name"));
     }
 
 
@@ -149,6 +149,26 @@ public class ProductServiceImpl implements ProductService {
             }
         } else {
             product = productRepository.findById(dto.getId()).orElseThrow(NoSuchElementException::new);
+            Type productType = product.getType();
+            Brand productBrand = product.getBrand();
+            if (productType != null) {
+                productType.removeProduct(product);
+            }
+            if (productBrand != null) {
+                productBrand.removeProduct(product);
+            }
+            if (productType != null && productBrand != null) {
+                productType.removeBrand(productBrand);
+            }
+            if (type != null) {
+                type.addProduct(product);
+            }
+            if (brand != null) {
+                brand.addProduct(product);
+            }
+            if (type != null && brand != null) {
+                type.addBrand(brand);
+            }
         }
         product.setName(dto.getName());
         product.setPrice(dto.getPrice());
@@ -302,11 +322,9 @@ public class ProductServiceImpl implements ProductService {
     public long deleteType(long typeId) {
         Type type = typeRepository.findById(typeId).get();
         long id = type.getId();
-        Type none = typeRepository.getOneByName("none");
         List<Product> products = new ArrayList<>(type.getProducts());
         for (Product product : products) {
             type.removeProduct(product);
-            none.addProduct(product);
         }
         typeRepository.deleteById(id);
         return id;
@@ -322,11 +340,9 @@ public class ProductServiceImpl implements ProductService {
     public long deleteBrand(long brandId) {
         Brand brand = brandRepository.findById(brandId).get();
         long id = brand.getId();
-        Brand none = brandRepository.getOneByName("none");
         List<Product> products = new ArrayList<>(brand.getProducts());
         for (Product product : products) {
             brand.removeProduct(product);
-            none.addProduct(product);
         }
         brandRepository.deleteById(id);
         return id;

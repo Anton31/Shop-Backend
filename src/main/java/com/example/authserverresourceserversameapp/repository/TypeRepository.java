@@ -9,6 +9,6 @@ import java.util.List;
 public interface TypeRepository extends JpaRepository<Type, Long> {
     Type getOneByName(String name);
 
-    @Query(value = "select t from Type t where size(t.products)>0")
+    @Query(value = "select t from Type t where size(t.products)>0 order by t.name")
     List<Type> getProductTypes();
 }
