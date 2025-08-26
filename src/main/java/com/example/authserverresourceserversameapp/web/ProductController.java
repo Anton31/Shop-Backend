@@ -65,7 +65,7 @@ public class ProductController {
     }
 
     @DeleteMapping("/photo/{productId}")
-    public long deletePhoto(@PathVariable long productId) {
+    public long deletePhotos(@PathVariable long productId) {
         return productService.removePhotos(productId);
     }
 
