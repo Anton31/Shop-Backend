@@ -228,7 +228,7 @@ public class ProductServiceImpl implements ProductService {
         Product product = productRepository.findById(productId).get();
         List<Photo> photos = new ArrayList<>(product.getPhotos());
         for (Photo photo : photos) {
-            removePhoto(product.getId(), photo);
+            removePhoto(product.getId(), photo.getId());
         }
         long id = product.getId();
         Type type = product.getType();
@@ -252,7 +252,7 @@ public class ProductServiceImpl implements ProductService {
         for (MultipartFile file : dto.getPhotos()) {
             Photo exists = photoRepository.findByNameAndProductId(file.getOriginalFilename(), product.getId());
             if (exists != null) {
-                removePhoto(product.getId(), exists);
+                removePhoto(product.getId(), exists.getId());
             }
             Photo newPhoto = new Photo();
             long photoId = photoRepository.save(newPhoto).getId();
@@ -271,11 +271,12 @@ public class ProductServiceImpl implements ProductService {
 
     /**
      * @param productId id of product
-     * @param photo     photo to delete
+     * @param photoId  id of  photo to delete
      */
     @Override
-    public void removePhoto(long productId, Photo photo) {
+    public long removePhoto(long productId, long photoId) {
         Product product = productRepository.findById(productId).get();
+        Photo photo = photoRepository.findById(photoId).get();
         int index = photo.getUrl().indexOf("photo_");
         product.removePhoto(photo);
         photoRepository.delete(photo);
@@ -289,13 +290,14 @@ public class ProductServiceImpl implements ProductService {
                     throw new RuntimeException(e);
                 }
         }
+        return 0L;
     }
 
     public long removePhotos(long productId) {
         Product product = productRepository.findById(productId).get();
         List<Photo> photos = new ArrayList<>(product.getPhotos());
         for (Photo photo : photos) {
-            removePhoto(productId, photo);
+            removePhoto(productId, photo.getId());
         }
         return productId;
     }

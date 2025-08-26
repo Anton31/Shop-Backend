@@ -29,7 +29,7 @@ public interface ProductService {
 
     long addPhoto(PhotoDto dto);
 
-    void removePhoto(long productId, Photo photo);
+    long removePhoto(long productId, long photoId);
 
     long removePhotos(long productId);
 

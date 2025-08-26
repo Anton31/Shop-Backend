@@ -3,8 +3,8 @@ package com.example.authserverresourceserversameapp.dto;
 
 public class ProductDto {
     private Long id;
-    private Long typeId;
-    private Long brandId;
+    private long typeId;
+    private long brandId;
     private String name;
     private int price;
 
@@ -16,19 +16,19 @@ public class ProductDto {
         this.id = id;
     }
 
-    public Long getTypeId() {
+    public long getTypeId() {
         return typeId;
     }
 
-    public void setTypeId(Long typeId) {
+    public void setTypeId(long typeId) {
         this.typeId = typeId;
     }
 
-    public Long getBrandId() {
+    public long getBrandId() {
         return brandId;
     }
 
-    public void setBrandId(Long brandId) {
+    public void setBrandId(long brandId) {
         this.brandId = brandId;
     }
 
