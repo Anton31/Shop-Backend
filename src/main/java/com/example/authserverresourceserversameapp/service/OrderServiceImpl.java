@@ -19,7 +19,9 @@ public class OrderServiceImpl implements OrderService {
 
     public OrderServiceImpl(ProductRepository productRepository,
                             ItemRepository itemRepository,
-                            CartRepository cartRepository, OrderRepository orderRepository, UserRepository userRepository) {
+                            CartRepository cartRepository,
+                            OrderRepository orderRepository,
+                            UserRepository userRepository) {
         this.productRepository = productRepository;
         this.itemRepository = itemRepository;
         this.cartRepository = cartRepository;
@@ -108,5 +110,16 @@ public class OrderServiceImpl implements OrderService {
         cart.removeItem(item);
         itemRepository.delete(item);
         return itemId;
+    }
+
+    /**
+     * @param orderId id of order to delete
+     * @return id of deleted order
+     */
+    @Override
+    public long deleteOrder(long orderId) {
+        Order order = orderRepository.findById(orderId).get();
+        orderRepository.delete(order);
+        return orderId;
     }
 }

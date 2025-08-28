@@ -20,4 +20,6 @@ public interface OrderService {
     Order addOrder(OrderDto dto, User user);
 
     long deleteItem(long itemId);
+
+    long deleteOrder(long orderId);
 }

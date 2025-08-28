@@ -108,6 +108,13 @@ public class ProductServiceImpl implements ProductService {
         return typeRepository.getProductTypes();
     }
 
+    /**
+     * gets all brands from database with particular type id
+     *
+     * @param typeId id of type
+     * @param dir    direction of sorting
+     * @return list of brands
+     */
     @Override
     public List<Brand> getProductBrands(Long typeId, String dir) {
         if (typeId == null) {
@@ -271,7 +278,7 @@ public class ProductServiceImpl implements ProductService {
 
     /**
      * @param productId id of product
-     * @param photoId  id of  photo to delete
+     * @param photoId   id of  photo to delete
      */
     @Override
     public long removePhoto(long productId, long photoId) {

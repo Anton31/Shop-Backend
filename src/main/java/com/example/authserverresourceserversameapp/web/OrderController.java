@@ -56,4 +56,9 @@ public class OrderController {
         User user = userService.findByUsername(principal.getName());
         return orderService.addOrder(dto, user);
     }
+
+    @DeleteMapping("/order/{orderId}")
+    public long deleteOrder(@PathVariable long orderId) {
+        return orderService.deleteOrder(orderId);
+    }
 }
