@@ -57,7 +57,7 @@ public class ProductControllerExceptionHandler {
         return ResponseEntity.status(403).body(response);
     }
 
-    @ExceptionHandler(TypeNotSelectedCanNotBeUpdatedOrDeletedException.class)
+    @ExceptionHandler(TypeNoneCanNotBeUpdatedOrDeletedException.class)
     @ResponseBody
     @ResponseStatus(HttpStatus.CONFLICT)
     protected ResponseEntity<ErrorResponse> handleTypeNotSelectedCanNotBeDeletedException(RuntimeException ex) {
@@ -65,7 +65,7 @@ public class ProductControllerExceptionHandler {
         return ResponseEntity.status(409).body(response);
     }
 
-    @ExceptionHandler(BrandNotSelectedCanNotBeUpdatedOrDeletedException.class)
+    @ExceptionHandler(BrandNoneCanNotBeUpdatedOrDeletedException.class)
     @ResponseBody
     @ResponseStatus(HttpStatus.CONFLICT)
     protected ResponseEntity<ErrorResponse> handleBrandNotSelectedCanNotBeDeletedException(RuntimeException ex) {

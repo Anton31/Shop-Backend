@@ -1,9 +1,7 @@
 package com.example.authserverresourceserversameapp.service;
 
 import com.example.authserverresourceserversameapp.dto.*;
-import com.example.authserverresourceserversameapp.exception.BrandExistsException;
-import com.example.authserverresourceserversameapp.exception.ProductExistsException;
-import com.example.authserverresourceserversameapp.exception.TypeExistsException;
+import com.example.authserverresourceserversameapp.exception.*;
 import com.example.authserverresourceserversameapp.model.Brand;
 import com.example.authserverresourceserversameapp.model.Photo;
 import com.example.authserverresourceserversameapp.model.Product;
@@ -95,7 +93,7 @@ public class ProductServiceImpl implements ProductService {
      */
     @Override
     public List<Type> getAllTypes(String dir) {
-        return typeRepository.findAll(Sort.by(Sort.Direction.fromString(dir), "name"));
+        return typeRepository.findAll(Sort.by(Sort.Direction.fromString(dir), "id"));
     }
 
     /**
@@ -118,9 +116,9 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public List<Brand> getProductBrands(Long typeId, String dir) {
         if (typeId == null) {
-            return brandRepository.findAll(Sort.by(Sort.Direction.fromString(dir), "name"));
+            return brandRepository.findAll(Sort.by(Sort.Direction.fromString(dir), "id"));
         }
-        return brandRepository.getAllByTypesId(typeId, Sort.by(Sort.Direction.fromString(dir), "name"));
+        return brandRepository.getAllByTypesId(typeId, Sort.by(Sort.Direction.fromString(dir), "id"));
     }
 
 
@@ -132,50 +130,30 @@ public class ProductServiceImpl implements ProductService {
      */
     public long addProduct(ProductDto dto) {
         Product product;
-        Type type = null;
-        Brand brand = null;
-        if (dto.getTypeId() > 0) {
-            type = typeRepository.findById(dto.getTypeId()).orElseThrow(NoSuchElementException::new);
-        }
-        if (dto.getBrandId() > 0) {
-            brand = brandRepository.findById(dto.getBrandId()).orElseThrow(NoSuchElementException::new);
-        }
+        Type type;
+        Brand brand;
+        type = typeRepository.findById(dto.getTypeId()).orElseThrow(NoSuchElementException::new);
+        brand = brandRepository.findById(dto.getBrandId()).orElseThrow(NoSuchElementException::new);
         if (dto.getId() == null) {
             if (productRepository.findByName(dto.getName()) != null) {
                 throw new ProductExistsException(dto.getName());
             }
             product = new Product();
-            if (type != null) {
-                type.addProduct(product);
-            }
-            if (brand != null) {
-                brand.addProduct(product);
-            }
-            if (type != null && brand != null && !type.getBrands().contains(brand)) {
+            type.addProduct(product);
+            brand.addProduct(product);
+            if (!type.getBrands().contains(brand)) {
                 type.addBrand(brand);
             }
         } else {
             product = productRepository.findById(dto.getId()).orElseThrow(NoSuchElementException::new);
             Type productType = product.getType();
             Brand productBrand = product.getBrand();
-            if (productType != null) {
-                productType.removeProduct(product);
-            }
-            if (productBrand != null) {
-                productBrand.removeProduct(product);
-            }
-            if (productType != null && productBrand != null) {
-                productType.removeBrand(productBrand);
-            }
-            if (type != null) {
-                type.addProduct(product);
-            }
-            if (brand != null) {
-                brand.addProduct(product);
-            }
-            if (type != null && brand != null) {
-                type.addBrand(brand);
-            }
+            productType.removeProduct(product);
+            productBrand.removeProduct(product);
+            productType.removeBrand(productBrand);
+            type.addProduct(product);
+            brand.addProduct(product);
+            type.addBrand(brand);
         }
         product.setName(dto.getName());
         product.setPrice(dto.getPrice());
@@ -198,6 +176,9 @@ public class ProductServiceImpl implements ProductService {
             type = new Type();
         } else {
             type = typeRepository.findById(dto.getId()).orElseThrow(NoSuchElementException::new);
+            if (type.getName().equals("None")) {
+                throw new TypeNoneCanNotBeUpdatedOrDeletedException();
+            }
         }
         type.setName(dto.getName());
         return typeRepository.save(type).getId();
@@ -219,6 +200,9 @@ public class ProductServiceImpl implements ProductService {
             brand = new Brand();
         } else {
             brand = brandRepository.findById(dto.getId()).orElseThrow(NoSuchElementException::new);
+            if (brand.getName().equals("None")) {
+                throw new BrandNoneCanNotBeUpdatedOrDeletedException();
+            }
         }
         brand.setName(dto.getName());
         return brandRepository.save(brand).getId();
@@ -330,13 +314,17 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public long deleteType(long typeId) {
         Type type = typeRepository.findById(typeId).get();
-        long id = type.getId();
+        if (type.getName().equals("None")) {
+            throw new TypeNoneCanNotBeUpdatedOrDeletedException();
+        }
+        Type none = typeRepository.getOneByName("None");
         List<Product> products = new ArrayList<>(type.getProducts());
         for (Product product : products) {
             type.removeProduct(product);
+            none.addProduct(product);
         }
-        typeRepository.deleteById(id);
-        return id;
+        typeRepository.deleteById(typeId);
+        return typeId;
     }
 
     /**
@@ -348,12 +336,16 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public long deleteBrand(long brandId) {
         Brand brand = brandRepository.findById(brandId).get();
-        long id = brand.getId();
+        if (brand.getName().equals("None")) {
+            throw new BrandNoneCanNotBeUpdatedOrDeletedException();
+        }
+        Brand none = brandRepository.getOneByName("None");
         List<Product> products = new ArrayList<>(brand.getProducts());
         for (Product product : products) {
             brand.removeProduct(product);
+            none.addProduct(product);
         }
-        brandRepository.deleteById(id);
-        return id;
+        brandRepository.deleteById(brandId);
+        return brandId;
     }
 }
