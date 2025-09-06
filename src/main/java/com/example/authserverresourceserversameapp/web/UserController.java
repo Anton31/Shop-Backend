@@ -7,6 +7,7 @@ import com.example.authserverresourceserversameapp.model.User;
 import com.example.authserverresourceserversameapp.model.VerificationToken;
 import com.example.authserverresourceserversameapp.service.UserService;
 import jakarta.mail.MessagingException;
+import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,7 +24,7 @@ public class UserController {
 
     @PostMapping
     @ResponseBody
-    public SuccessResponse register(@RequestBody UserDto dto) throws MessagingException {
+    public SuccessResponse register(@Valid @RequestBody UserDto dto) throws MessagingException {
         String text = "Message for confirmation registration sand to your email";
         userService.registerNewUserAccount(dto);
         return new SuccessResponse(text);

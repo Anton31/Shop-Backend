@@ -1,9 +1,12 @@
 package com.example.authserverresourceserversameapp.dto;
 
 
+import jakarta.validation.constraints.NotBlank;
+
 public class BrandDto {
     private Long id;
     private Long typeId;
+    @NotBlank(message = "Brand name is mandatory")
     private String name;
 
     public Long getId() {

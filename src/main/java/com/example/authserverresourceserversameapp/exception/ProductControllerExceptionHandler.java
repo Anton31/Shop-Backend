@@ -2,6 +2,7 @@ package com.example.authserverresourceserversameapp.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -71,5 +72,17 @@ public class ProductControllerExceptionHandler {
     protected ResponseEntity<ErrorResponse> handleBrandNotSelectedCanNotBeDeletedException(RuntimeException ex) {
         ErrorResponse response = new ErrorResponse(ex.getMessage());
         return ResponseEntity.status(409).body(response);
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<ErrorResponse> handleValidationExceptions(
+            MethodArgumentNotValidException ex) {
+        StringBuilder sb = new StringBuilder();
+        ex.getBindingResult().getAllErrors().forEach((error) -> {
+            String errorMessage = error.getDefaultMessage();
+            sb.append(errorMessage + "; ");
+        });
+        return ResponseEntity.status(400).body(new ErrorResponse(sb.toString()));
     }
 }

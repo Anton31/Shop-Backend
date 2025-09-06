@@ -1,11 +1,17 @@
 package com.example.authserverresourceserversameapp.dto;
 
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
+
 public class UserDto {
     private String role;
     private String username;
     private String email;
+    @NotBlank(message = "Password is mandatory")
+    @Size(min = 4, max = 16, message = "password size should be between 4 and 16")
     private String password;
+
     private String passwordConfirmed;
 
     public String getRole() {

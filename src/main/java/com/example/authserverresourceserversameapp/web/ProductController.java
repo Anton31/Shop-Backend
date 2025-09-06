@@ -4,6 +4,7 @@ import com.example.authserverresourceserversameapp.dto.*;
 import com.example.authserverresourceserversameapp.model.Brand;
 import com.example.authserverresourceserversameapp.model.Type;
 import com.example.authserverresourceserversameapp.service.ProductService;
+import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
@@ -45,12 +46,12 @@ public class ProductController {
     }
 
     @PostMapping("/product")
-    public long addProduct(ProductDto dto) {
+    public long addProduct(@Valid ProductDto dto) {
         return productService.addProduct(dto);
     }
 
     @PutMapping("/product")
-    public long editProduct(ProductDto dto) {
+    public long editProduct(@Valid ProductDto dto) {
         return productService.addProduct(dto);
     }
 
@@ -76,12 +77,12 @@ public class ProductController {
     }
 
     @PostMapping("/type")
-    public long addType(TypeDto dto) {
+    public long addType(@Valid TypeDto dto) {
         return productService.addType(dto);
     }
 
     @PutMapping("/type")
-    public long editType(TypeDto dto) {
+    public long editType(@Valid TypeDto dto) {
         return productService.addType(dto);
     }
 
@@ -91,12 +92,12 @@ public class ProductController {
     }
 
     @PostMapping("/brand")
-    public long addBrand(BrandDto dto) {
+    public long addBrand(@Valid BrandDto dto) {
         return productService.addBrand(dto);
     }
 
     @PutMapping("/brand")
-    public long editBrand(BrandDto dto) {
+    public long editBrand(@Valid BrandDto dto) {
         return productService.addBrand(dto);
     }
 
