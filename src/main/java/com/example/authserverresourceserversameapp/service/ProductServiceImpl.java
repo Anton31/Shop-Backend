@@ -92,8 +92,13 @@ public class ProductServiceImpl implements ProductService {
      * @return list of types
      */
     @Override
-    public List<Type> getAllTypes(String dir) {
-        return typeRepository.findAll(Sort.by(Sort.Direction.fromString(dir), "id"));
+    public List<Type> getAllTypes(String sort, String dir) {
+        return typeRepository.getAllByNameNotLike("None", Sort.by(Sort.Direction.fromString(dir), sort));
+    }
+
+    @Override
+    public List<Brand> getAllBrands(String sort, String dir) {
+        return brandRepository.getAllByNameNotLike("None", Sort.by(Sort.Direction.fromString(dir), sort));
     }
 
     /**
@@ -114,11 +119,11 @@ public class ProductServiceImpl implements ProductService {
      * @return list of brands
      */
     @Override
-    public List<Brand> getProductBrands(Long typeId, String dir) {
+    public List<Brand> getProductBrands(Long typeId, String sort, String dir) {
         if (typeId == null) {
-            return brandRepository.findAll(Sort.by(Sort.Direction.fromString(dir), "id"));
+            return brandRepository.findAll(Sort.by(Sort.Direction.fromString(dir), sort));
         }
-        return brandRepository.getAllByTypesId(typeId, Sort.by(Sort.Direction.fromString(dir), "id"));
+        return brandRepository.getAllByTypesId(typeId, Sort.by(Sort.Direction.fromString(dir), sort));
     }
 
 

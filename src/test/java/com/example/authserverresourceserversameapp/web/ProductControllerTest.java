@@ -94,7 +94,7 @@ public class ProductControllerTest {
         List<Type> types = new ArrayList<>();
         types.add(type);
         types.add(type1);
-        given(productService.getAllTypes(anyString())).willReturn(types);
+        given(productService.getAllTypes(anyString(), anyString())).willReturn(types);
         this.mockMvc.perform(get("/products/type").accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(2)))
@@ -114,7 +114,7 @@ public class ProductControllerTest {
         List<Brand> brands = new ArrayList<>();
         brands.add(brand);
         brands.add(brand1);
-        given(productService.getProductBrands(anyLong(), anyString())).willReturn(brands);
+        given(productService.getProductBrands(anyLong(), anyString(), anyString())).willReturn(brands);
         this.mockMvc.perform(get("/products/brand?typeId=1").accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(2)))

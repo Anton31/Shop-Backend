@@ -166,7 +166,7 @@ public class ProductServiceTest {
         types.add(type);
         types.add(type1);
         given(typeRepository.findAll(any(Sort.class))).willReturn(types);
-        List<Type> serviceTypes = productService.getAllTypes("ASC");
+        List<Type> serviceTypes = productService.getAllTypes("name", "ASC");
         assertThat(serviceTypes).isNotNull();
         assertThat(serviceTypes.size()).isEqualTo(2);
         assertThat(serviceTypes.get(0).getId()).isEqualTo(1L);
