@@ -26,7 +26,7 @@ public class OrderController {
     @GetMapping
     public Cart getCart(Principal principal) {
         User user = userService.findByUsername(principal.getName());
-        return orderService.getUserCart(user);
+        return orderService.getCartByUser(user);
     }
 
     @PostMapping

@@ -13,7 +13,7 @@ public interface OrderService {
 
     Cart editItem(ItemDto dto);
 
-    Cart getUserCart(User user);
+    Cart getCartByUser(User user);
 
     List<Order> getOrders(User user);
 

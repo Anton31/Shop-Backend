@@ -72,7 +72,7 @@ public class OrderServiceImpl implements OrderService {
      * @return cart created by current user
      */
     @Override
-    public Cart getUserCart(User user) {
+    public Cart getCartByUser(User user) {
         return cartRepository.getByUser(user);
     }
 

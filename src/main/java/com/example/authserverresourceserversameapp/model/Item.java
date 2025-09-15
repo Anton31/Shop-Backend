@@ -13,8 +13,8 @@ public class Item {
     private transient long totalPrice;
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private Product product;
-    @JsonIgnore
     @ManyToOne
+    @JsonIgnore
     private Cart cart;
     @ManyToOne
     @JsonIgnore
