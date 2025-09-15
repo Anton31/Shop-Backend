@@ -24,7 +24,7 @@ public class UserController {
 
     @PostMapping
     @ResponseBody
-    public SuccessResponse register(@Valid @RequestBody UserDto dto) throws MessagingException {
+    public SuccessResponse register(@Valid UserDto dto) throws MessagingException {
         String text = "Message for confirmation registration sand to your email";
         userService.registerNewUserAccount(dto);
         return new SuccessResponse(text);
@@ -59,7 +59,7 @@ public class UserController {
 
     @PutMapping
     @ResponseBody
-    public SuccessResponse editUser(@RequestBody UserDto dto) {
+    public SuccessResponse editUser(UserDto dto) {
         String text = "Password changed";
         userService.editExistingUserAccount(dto);
         return new SuccessResponse(text);
