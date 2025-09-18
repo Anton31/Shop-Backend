@@ -12,6 +12,6 @@ public interface TypeRepository extends JpaRepository<Type, Long> {
 
     List<Type> getAllByNameNotLike(String name, Sort sort);
 
-    @Query(value = "select t from Type t where size(t.products)>0")
-    List<Type> getProductTypes();
+    @Query(value = "select t from Type t where size(t.products)>0 and t.name not like ?1")
+    List<Type> getProductTypes(String name);
 }

@@ -96,10 +96,6 @@ public class ProductServiceImpl implements ProductService {
         return typeRepository.getAllByNameNotLike("None", Sort.by(Sort.Direction.fromString(dir), sort));
     }
 
-    @Override
-    public List<Brand> getAllBrands(String sort, String dir) {
-        return brandRepository.getAllByNameNotLike("None", Sort.by(Sort.Direction.fromString(dir), sort));
-    }
 
     /**
      * gets all types from database related to products
@@ -108,7 +104,7 @@ public class ProductServiceImpl implements ProductService {
      */
     @Override
     public List<Type> getProductTypes() {
-        return typeRepository.getProductTypes();
+        return typeRepository.getProductTypes("None");
     }
 
     /**
@@ -121,9 +117,10 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public List<Brand> getProductBrands(Long typeId, String sort, String dir) {
         if (typeId == null) {
-            return brandRepository.findAll(Sort.by(Sort.Direction.fromString(dir), sort));
+            return brandRepository.getAllByNameNotLike("None", Sort.by(Sort.Direction.fromString(dir), sort));
         }
-        return brandRepository.getAllByTypesId(typeId, Sort.by(Sort.Direction.fromString(dir), sort));
+        return brandRepository.getAllByTypesIdAndNameNotLike(typeId,
+                "None", Sort.by(Sort.Direction.fromString(dir), sort));
     }
 
 
