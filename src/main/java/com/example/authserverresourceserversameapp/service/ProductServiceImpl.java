@@ -159,7 +159,9 @@ public class ProductServiceImpl implements ProductService {
         }
         product.setName(dto.getName());
         product.setPrice(dto.getPrice());
-        return productRepository.save(product).getId();
+        Product saved = productRepository.save(product);
+        addPhoto(new PhotoDto(saved.getId(), dto.getPhotos()));
+        return saved.getId();
     }
 
     /**

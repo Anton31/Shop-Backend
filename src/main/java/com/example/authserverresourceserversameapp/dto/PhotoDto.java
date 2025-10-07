@@ -10,6 +10,14 @@ public class PhotoDto {
 
     private List<MultipartFile> photos;
 
+    public PhotoDto() {
+    }
+
+    public PhotoDto(long productId, List<MultipartFile> photos) {
+        this.productId = productId;
+        this.photos = photos;
+    }
+
     public long getProductId() {
         return productId;
     }

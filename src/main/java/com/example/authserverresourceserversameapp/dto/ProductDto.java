@@ -2,6 +2,9 @@ package com.example.authserverresourceserversameapp.dto;
 
 
 import jakarta.validation.constraints.NotBlank;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 public class ProductDto {
     private Long id;
@@ -10,7 +13,7 @@ public class ProductDto {
     @NotBlank(message = "Product name is mandatory")
     private String name;
     private int price;
-
+    private List<MultipartFile> photos;
     public Long getId() {
         return id;
     }
@@ -49,5 +52,13 @@ public class ProductDto {
 
     public void setPrice(int price) {
         this.price = price;
+    }
+
+    public List<MultipartFile> getPhotos() {
+        return photos;
+    }
+
+    public void setPhotos(List<MultipartFile> photos) {
+        this.photos = photos;
     }
 }
