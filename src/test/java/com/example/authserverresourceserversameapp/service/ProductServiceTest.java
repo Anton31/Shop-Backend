@@ -85,7 +85,7 @@ public class ProductServiceTest {
     }
 
     @Test
-    public void addPhotoTest() throws IOException {
+    public void addPhotosTest() throws IOException {
         Optional<Product> product1 = Optional.of(product);
         files = new ArrayList<>();
         File file = new File("src/main/webapp/WEB-INF/images/test_image.jpg");
@@ -97,7 +97,7 @@ public class ProductServiceTest {
         given(productRepository.findById(anyLong())).willReturn(product1);
         given(photoRepository.save(any(Photo.class))).willReturn(photo);
         given(productRepository.save(any(Product.class))).willReturn(product);
-        long id = productService.addPhoto(photoDto);
+        long id = productService.addPhotos(photoDto);
         assertThat(id).isEqualTo(1L);
     }
 

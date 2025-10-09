@@ -151,7 +151,7 @@ public class ProductControllerTest {
     @Test
     @WithMockUser
     public void addPhotoTest() throws Exception {
-        given(productService.addPhoto(any(PhotoDto.class))).willReturn(3L);
+        given(productService.addPhotos(any(PhotoDto.class))).willReturn(3L);
         this.mockMvc.perform(post("/products/photo").with(csrf()))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$").value(3));

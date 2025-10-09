@@ -159,9 +159,7 @@ public class ProductServiceImpl implements ProductService {
         }
         product.setName(dto.getName());
         product.setPrice(dto.getPrice());
-        Product saved = productRepository.save(product);
-        addPhoto(new PhotoDto(saved.getId(), dto.getPhotos()));
-        return saved.getId();
+        return productRepository.save(product).getId();
     }
 
     /**
@@ -241,7 +239,7 @@ public class ProductServiceImpl implements ProductService {
      * @return id of product to which new photos has been added
      */
     @Override
-    public long addPhoto(PhotoDto dto) {
+    public long addPhotos(PhotoDto dto) {
         Product product = productRepository.findById(dto.getProductId()).get();
         Path photoPath;
         for (MultipartFile file : dto.getPhotos()) {

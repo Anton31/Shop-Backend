@@ -27,7 +27,7 @@ public interface ProductService {
 
     long deleteProduct(long id) throws IOException;
 
-    long addPhoto(PhotoDto dto);
+    long addPhotos(PhotoDto dto);
 
     long removePhoto(long productId, long photoId);
 
