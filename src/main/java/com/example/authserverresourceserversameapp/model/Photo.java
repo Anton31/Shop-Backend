@@ -9,7 +9,7 @@ public class Photo {
     @SequenceGenerator(name = "imageGen", sequenceName = "imageSeq", initialValue = 20)
     @GeneratedValue(generator = "imageGen")
     private Long id;
-    private String name;
+    private String fileName;
     private String url;
     @ManyToOne
     @JsonIgnore
@@ -23,12 +23,12 @@ public class Photo {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
+    public String getFileName() {
+        return fileName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setFileName(String name) {
+        this.fileName = name;
     }
 
     public String getUrl() {

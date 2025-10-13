@@ -243,13 +243,13 @@ public class ProductServiceImpl implements ProductService {
         Product product = productRepository.findById(dto.getProductId()).get();
         Path photoPath;
         for (MultipartFile file : dto.getPhotos()) {
-            Photo exists = photoRepository.findByNameAndProductId(file.getOriginalFilename(), product.getId());
+            Photo exists = photoRepository.findByFileNameAndProductId(file.getOriginalFilename(), product.getId());
             if (exists != null) {
                 removePhoto(product.getId(), exists.getId());
             }
             Photo newPhoto = new Photo();
             long photoId = photoRepository.save(newPhoto).getId();
-            newPhoto.setName(file.getOriginalFilename());
+            newPhoto.setFileName(file.getOriginalFilename());
             newPhoto.setUrl(imageUrl + "photo_" + photoId + "_" + file.getOriginalFilename());
             product.addPhoto(newPhoto);
             photoPath = Paths.get(imageDir + "photo_" + photoId + "_" + file.getOriginalFilename());
@@ -283,7 +283,7 @@ public class ProductServiceImpl implements ProductService {
                     throw new RuntimeException(e);
                 }
         }
-        return 0L;
+        return productId;
     }
 
     public long removePhotos(long productId) {

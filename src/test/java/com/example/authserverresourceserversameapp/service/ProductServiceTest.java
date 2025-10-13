@@ -66,7 +66,7 @@ public class ProductServiceTest {
     public void setup() {
         photo = new Photo();
         photo.setId(1L);
-        photo.setName("1_photo1.jpg");
+        photo.setFileName("1_photo1.jpg");
         photo.setUrl("http://localhost:8080/images/photo_1_photo1.jpg");
         product = new Product();
         product.setId(1L);

@@ -15,7 +15,6 @@ public class Product {
     private String name;
     private int price;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "product")
-    @OrderBy("name")
     private List<Photo> photos = new ArrayList<>();
     @ManyToOne
     private Type type;

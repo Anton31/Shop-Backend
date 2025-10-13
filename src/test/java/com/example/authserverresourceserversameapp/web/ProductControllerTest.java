@@ -58,7 +58,7 @@ public class ProductControllerTest {
         brand.setName("Mercedes");
         photo = new Photo();
         photo.setId(1L);
-        photo.setName("photo1.jpg");
+        photo.setFileName("photo1.jpg");
     }
 
     @Test

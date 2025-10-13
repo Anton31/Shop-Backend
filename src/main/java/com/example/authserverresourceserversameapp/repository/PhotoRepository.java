@@ -5,6 +5,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface PhotoRepository extends JpaRepository<Photo, Long> {
 
-    Photo findByNameAndProductId(String name, long productId);
+    Photo findByFileNameAndProductId(String fileName, long productId);
 
 }
