@@ -2,6 +2,7 @@ package com.example.authserverresourceserversameapp.web;
 
 import com.example.authserverresourceserversameapp.dto.*;
 import com.example.authserverresourceserversameapp.model.Brand;
+import com.example.authserverresourceserversameapp.model.Product;
 import com.example.authserverresourceserversameapp.model.Type;
 import com.example.authserverresourceserversameapp.service.ProductService;
 import jakarta.validation.Valid;
@@ -46,6 +47,11 @@ public class ProductController {
                                           @RequestParam(required = false, defaultValue = "0") int page,
                                           @RequestParam(required = false, defaultValue = "10") int size) {
         return productService.getProducts(typeId, brandId, sort, dir, page, size);
+    }
+
+    @GetMapping("/product/{id}")
+    public Product getProduct(@PathVariable long id) {
+        return productService.getProduct(id);
     }
 
     @PostMapping("/product")

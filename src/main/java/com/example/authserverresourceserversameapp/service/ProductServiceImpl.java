@@ -86,6 +86,11 @@ public class ProductServiceImpl implements ProductService {
         return dto;
     }
 
+    @Override
+    public Product getProduct(long id) {
+        return productRepository.findById(id).get();
+    }
+
     /**
      * gets all types from database
      *
