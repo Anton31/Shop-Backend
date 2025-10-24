@@ -13,6 +13,7 @@ public interface ProductService {
 
     ResponseProductDto getProducts(Long typeId, Long brandId, String sort,
                                    String dir, int page, int size);
+
     Product getProduct(long id);
 
     List<Type> getAllTypes(String sort, String dir);
@@ -31,9 +32,9 @@ public interface ProductService {
 
     long addPhotos(PhotoDto dto);
 
-    long removePhoto(long productId, long photoId);
+    Product removePhoto(long productId, long photoId);
 
-    long removePhotos(long productId);
+    Product removePhotos(long productId);
 
     Photo getPhoto(long photoId);
 

@@ -272,7 +272,7 @@ public class ProductServiceImpl implements ProductService {
      * @param photoId   id of  photo to delete
      */
     @Override
-    public long removePhoto(long productId, long photoId) {
+    public Product removePhoto(long productId, long photoId) {
         Product product = productRepository.findById(productId).get();
         Photo photo = photoRepository.findById(photoId).get();
         int index = photo.getUrl().indexOf("photo_");
@@ -288,16 +288,16 @@ public class ProductServiceImpl implements ProductService {
                     throw new RuntimeException(e);
                 }
         }
-        return productId;
+        return product;
     }
 
-    public long removePhotos(long productId) {
+    public Product removePhotos(long productId) {
         Product product = productRepository.findById(productId).get();
         List<Photo> photos = new ArrayList<>(product.getPhotos());
         for (Photo photo : photos) {
             removePhoto(productId, photo.getId());
         }
-        return productId;
+        return product;
     }
 
     /**
