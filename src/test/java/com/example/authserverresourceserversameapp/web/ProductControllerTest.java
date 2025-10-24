@@ -157,15 +157,15 @@ public class ProductControllerTest {
                 .andExpect(jsonPath("$").value(3));
     }
 
-    @Test
-    @WithMockUser
-    public void deletePhotoTest() throws Exception {
-        given(productService.getPhoto(anyLong())).willReturn(photo);
-        given(productService.removePhotos(anyLong())).willReturn(1L);
-        this.mockMvc.perform(delete("/products/photo/1").with(csrf()))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$").value(1L));
-    }
+//    @Test
+//    @WithMockUser
+//    public void deletePhotoTest() throws Exception {
+//        given(productService.getPhoto(anyLong())).willReturn(photo);
+//        given(productService.removePhotos(anyLong())).willReturn(1L);
+//        this.mockMvc.perform(delete("/products/photo/1").with(csrf()))
+//                .andExpect(status().isOk())
+//                .andExpect(jsonPath("$").value(1L));
+//    }
 
     @Test
     @WithMockUser

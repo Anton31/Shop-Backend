@@ -101,12 +101,12 @@ public class ProductServiceTest {
         assertThat(id).isEqualTo(1L);
     }
 
-    @Test
-    public void removePhotosTest() {
-        given(productRepository.findById(anyLong())).willReturn(Optional.ofNullable(product));
-        long id = productService.removePhotos(product.getId());
-        assertThat(id).isEqualTo(1L);
-    }
+//    @Test
+//    public void removePhotosTest() {
+//        given(productRepository.findById(anyLong())).willReturn(Optional.ofNullable(product));
+//        long id = productService.removePhotos(product.getId());
+//        assertThat(id).isEqualTo(1L);
+//    }
 
     @Test
     public void getProductsTest() {

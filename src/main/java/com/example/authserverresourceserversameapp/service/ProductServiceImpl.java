@@ -300,17 +300,6 @@ public class ProductServiceImpl implements ProductService {
         return productId;
     }
 
-    /**
-     * gets photo with particular id from database
-     *
-     * @param photoId id of photo
-     * @return photo with particular id
-     */
-    @Override
-    public Photo getPhoto(long photoId) {
-        return photoRepository.findById(photoId).get();
-    }
-
 
     /**
      * deletes type from database by id
