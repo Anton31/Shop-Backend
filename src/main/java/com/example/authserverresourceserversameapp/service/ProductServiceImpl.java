@@ -223,7 +223,7 @@ public class ProductServiceImpl implements ProductService {
      */
     @Override
     public long deleteProduct(long productId) {
-        Product product = productRepository.findById(productId).get();
+        Product product = productRepository.findById(productId).orElseThrow(NoSuchElementException::new);
         List<Photo> photos = new ArrayList<>(product.getPhotos());
         for (Photo photo : photos) {
             removePhoto(product.getId(), photo.getId());

@@ -55,7 +55,7 @@ values (1, 'Mercedes S600', 200000, 2, 2);
 insert into product (id, name, price, type_id, brand_id)
 values (2, 'BMW 750i', 150000, 2, 3);
 insert into product (id, name, price, type_id, brand_id)
-values (3, 'Audi R8', 250000, 2, 4);
+values (3, 'Audi A8', 150000, 2, 4);
 insert into product (id, name, price, type_id, brand_id)
 values (4, 'iPhone 15', 1000, 3, 5);
 insert into product (id, name, price, type_id, brand_id)

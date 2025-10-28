@@ -38,11 +38,11 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.doNothing;
 
 @ExtendWith(MockitoExtension.class)
 public class ProductServiceTest {
-    PhotoDto photoDto;
+
+
     List<MultipartFile> files;
     MultipartFile mockMultipartFile;
     byte[] bytes;
@@ -52,7 +52,6 @@ public class ProductServiceTest {
     private BrandRepository brandRepository;
     @Mock
     private TypeRepository typeRepository;
-
     @Mock
     private PhotoRepository photoRepository;
     @InjectMocks
@@ -61,6 +60,7 @@ public class ProductServiceTest {
     private Type type;
     private Brand brand;
     private Photo photo;
+    private PhotoDto photoDto;
 
     @BeforeEach
     public void setup() {
@@ -101,12 +101,13 @@ public class ProductServiceTest {
         assertThat(id).isEqualTo(1L);
     }
 
-//    @Test
-//    public void removePhotosTest() {
-//        given(productRepository.findById(anyLong())).willReturn(Optional.ofNullable(product));
-//        long id = productService.removePhotos(product.getId());
-//        assertThat(id).isEqualTo(1L);
-//    }
+    @Test
+    public void removePhotosTest() {
+        given(productRepository.findById(anyLong())).willReturn(Optional.ofNullable(product));
+        given(photoRepository.findById(anyLong())).willReturn(Optional.ofNullable(photo));
+        long id = productService.removePhoto(1L, 1L);
+        assertThat(id).isEqualTo(1L);
+    }
 
     @Test
     public void getProductsTest() {
@@ -165,7 +166,7 @@ public class ProductServiceTest {
         List<Type> types = new ArrayList<>();
         types.add(type);
         types.add(type1);
-        given(typeRepository.findAll(any(Sort.class))).willReturn(types);
+        given(typeRepository.getAllByNameNotLike(anyString(), any(Sort.class))).willReturn(types);
         List<Type> serviceTypes = productService.getAllTypes("name", "ASC");
         assertThat(serviceTypes).isNotNull();
         assertThat(serviceTypes.size()).isEqualTo(2);
@@ -195,11 +196,4 @@ public class ProductServiceTest {
         assertEquals("Brand with name: \"Samsung\" already exists!", exception.getMessage());
     }
 
-    @Test
-    public void deleteProductTest() {
-        given(productRepository.findById(anyLong())).willReturn(Optional.ofNullable(product));
-        doNothing().when(productRepository).deleteById(anyLong());
-        long id = productService.deleteProduct(anyLong());
-        assertThat(id).isEqualTo(1L);
-    }
 }

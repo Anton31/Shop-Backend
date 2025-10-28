@@ -29,17 +29,19 @@ public class UserControllerTest {
     AppUserDetailsService userDetailsService;
     @MockitoBean
     JavaMailSender mailSender;
+
     @Autowired
     private MockMvc mockMvc;
     @MockitoBean
     private UserService userService;
 
+
     @Test
     @WithMockUser
     public void addUserTest() throws Exception {
-
         User user = new User();
         user.setUsername("user");
+        user.setPassword("password");
         given(userService.registerNewUserAccount(any(UserDto.class))).willReturn(user);
         this.mockMvc.perform(post("/user").with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
