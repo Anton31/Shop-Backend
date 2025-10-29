@@ -43,7 +43,7 @@ public class ProductControllerTest {
     private Type type;
     private Brand brand;
     private Product product;
-    private Photo photo;
+    Photo photo;
 
     @BeforeEach
     public void setup() {
@@ -156,16 +156,6 @@ public class ProductControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$").value(3));
     }
-
-//    @Test
-//    @WithMockUser
-//    public void deletePhotoTest() throws Exception {
-//        given(productService.getPhoto(anyLong())).willReturn(photo);
-//        given(productService.removePhotos(anyLong())).willReturn(1L);
-//        this.mockMvc.perform(delete("/products/photo/1").with(csrf()))
-//                .andExpect(status().isOk())
-//                .andExpect(jsonPath("$").value(1L));
-//    }
 
     @Test
     @WithMockUser
