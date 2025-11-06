@@ -1,7 +1,9 @@
 package com.example.authserverresourceserversameapp.service;
 
 import com.example.authserverresourceserversameapp.dto.*;
-import com.example.authserverresourceserversameapp.exception.*;
+import com.example.authserverresourceserversameapp.exception.BrandExistsException;
+import com.example.authserverresourceserversameapp.exception.ProductExistsException;
+import com.example.authserverresourceserversameapp.exception.TypeExistsException;
 import com.example.authserverresourceserversameapp.model.Brand;
 import com.example.authserverresourceserversameapp.model.Photo;
 import com.example.authserverresourceserversameapp.model.Product;
@@ -110,7 +112,7 @@ public class ProductServiceImpl implements ProductService {
      * @return list of brands
      */
     @Override
-    public List<Brand> getProductBrands(Long typeId, String sort, String dir) {
+    public List<Brand> getBrandsByTypeId(Long typeId, String sort, String dir) {
         if (typeId == null) {
             return brandRepository.findAll(Sort.by(Sort.Direction.fromString(dir), sort));
         }
@@ -135,17 +137,15 @@ public class ProductServiceImpl implements ProductService {
                 throw new ProductExistsException(dto.getName());
             }
             product = new Product();
-            type.addProduct(product);
-            brand.addProduct(product);
         } else {
             product = productRepository.findById(dto.getId()).orElseThrow(NoSuchElementException::new);
             Type productType = product.getType();
             Brand productBrand = product.getBrand();
             productType.removeProduct(product);
             productBrand.removeProduct(product);
-            type.addProduct(product);
-            brand.addProduct(product);
         }
+        type.addProduct(product);
+        brand.addProduct(product);
         product.setName(dto.getName());
         product.setPrice(dto.getPrice());
         return productRepository.save(product).getId();
@@ -169,9 +169,6 @@ public class ProductServiceImpl implements ProductService {
             type.addBrand(brand);
         } else {
             type = typeRepository.findById(dto.getId()).orElseThrow(NoSuchElementException::new);
-            if (type.getName().equals("None")) {
-                throw new TypeNoneCanNotBeUpdatedOrDeletedException();
-            }
         }
         type.setName(dto.getName());
         return typeRepository.save(type).getId();
@@ -195,9 +192,6 @@ public class ProductServiceImpl implements ProductService {
             type.addBrand(brand);
         } else {
             brand = brandRepository.findById(dto.getId()).orElseThrow(NoSuchElementException::new);
-            if (brand.getName().equals("None")) {
-                throw new BrandNoneCanNotBeUpdatedOrDeletedException();
-            }
         }
         brand.setName(dto.getName());
         return brandRepository.save(brand).getId();
@@ -298,10 +292,7 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public long deleteType(long typeId) {
         Type type = typeRepository.findById(typeId).get();
-        if (type.getName().equals("None")) {
-            throw new TypeNoneCanNotBeUpdatedOrDeletedException();
-        }
-        Type none = typeRepository.getOneByName("None");
+        Type none = typeRepository.findById(1L).get();
         List<Product> products = new ArrayList<>(type.getProducts());
         for (Product product : products) {
             type.removeProduct(product);
@@ -320,10 +311,7 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public long deleteBrand(long brandId) {
         Brand brand = brandRepository.findById(brandId).get();
-        if (brand.getName().equals("None")) {
-            throw new BrandNoneCanNotBeUpdatedOrDeletedException();
-        }
-        Brand none = brandRepository.getOneByName("None");
+        Brand none = brandRepository.findById(1L).get();
         List<Product> products = new ArrayList<>(brand.getProducts());
         for (Product product : products) {
             brand.removeProduct(product);

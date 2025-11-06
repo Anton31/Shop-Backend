@@ -26,10 +26,10 @@ public class ProductController {
     }
 
     @GetMapping("/brand")
-    public List<Brand> getProductBrands(@RequestParam(required = false) Long typeId,
-                                        @RequestParam(required = false, defaultValue = "name") String sort,
-                                        @RequestParam(required = false, defaultValue = "ASC") String dir) {
-        return productService.getProductBrands(typeId, sort, dir);
+    public List<Brand> getBrandsByTypeId(@RequestParam(required = false) Long typeId,
+                                         @RequestParam(required = false, defaultValue = "name") String sort,
+                                         @RequestParam(required = false, defaultValue = "ASC") String dir) {
+        return productService.getBrandsByTypeId(typeId, sort, dir);
     }
 
     @GetMapping(value = "/product")
