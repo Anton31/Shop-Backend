@@ -93,14 +93,15 @@ public class ProductServiceImpl implements ProductService {
         return productRepository.findById(id).get();
     }
 
-    /**
-     * gets all types from database
-     *
-     * @return list of types
-     */
     @Override
     public List<Type> getAllTypes(String sort, String dir) {
         return typeRepository.findAll(Sort.by(Sort.Direction.fromString(dir), sort));
+    }
+
+
+    @Override
+    public List<Type> getProductTypes() {
+        return typeRepository.getProductTypes();
     }
 
 
@@ -160,13 +161,18 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public long addType(TypeDto dto) {
         Type type;
-        Brand brand = brandRepository.findById(dto.getBrandId()).orElseThrow(NoSuchElementException::new);
+        Brand brand = null;
+        if (dto.getBrandId() != null) {
+            brand = brandRepository.findById(dto.getBrandId()).orElseThrow(NoSuchElementException::new);
+        }
         if (typeRepository.getOneByName(dto.getName()) != null) {
             throw new TypeExistsException(dto.getName());
         }
         if (dto.getId() == null) {
             type = new Type();
-            type.addBrand(brand);
+            if (brand != null) {
+                type.addBrand(brand);
+            }
         } else {
             type = typeRepository.findById(dto.getId()).orElseThrow(NoSuchElementException::new);
         }
@@ -183,13 +189,18 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public long addBrand(BrandDto dto) {
         Brand brand;
-        Type type = typeRepository.findById(dto.getTypeId()).orElseThrow(NoSuchElementException::new);
+        Type type = null;
+        if (dto.getTypeId() != null) {
+            type = typeRepository.findById(dto.getTypeId()).orElseThrow(NoSuchElementException::new);
+        }
         if (brandRepository.getOneByName(dto.getName()) != null) {
             throw new BrandExistsException(dto.getName());
         }
         if (dto.getId() == null) {
             brand = new Brand();
-            type.addBrand(brand);
+            if (type != null) {
+                type.addBrand(brand);
+            }
         } else {
             brand = brandRepository.findById(dto.getId()).orElseThrow(NoSuchElementException::new);
         }

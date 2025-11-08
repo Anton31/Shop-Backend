@@ -25,6 +25,11 @@ public class ProductController {
         return productService.getAllTypes(sort, dir);
     }
 
+    @GetMapping("/productType")
+    public List<Type> getProductTypes() {
+        return productService.getProductTypes();
+    }
+
     @GetMapping("/brand")
     public List<Brand> getBrandsByTypeId(@RequestParam(required = false) Long typeId,
                                          @RequestParam(required = false, defaultValue = "name") String sort,
