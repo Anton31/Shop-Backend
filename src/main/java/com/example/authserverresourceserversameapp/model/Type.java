@@ -66,8 +66,10 @@ public class Type {
     }
 
     public void addBrand(Brand brand) {
-        this.brands.add(brand);
-        brand.getTypes().add(this);
+        if (!this.brands.contains(brand)) {
+            this.brands.add(brand);
+            brand.getTypes().add(this);
+        }
     }
 
     public void removeBrand(Brand brand) {
