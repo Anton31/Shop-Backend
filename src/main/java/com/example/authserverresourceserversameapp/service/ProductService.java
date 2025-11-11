@@ -17,6 +17,8 @@ public interface ProductService {
 
     List<Type> getAllTypes(String sort, String dir);
 
+    List<Brand> getAllBrands(String sort, String dir);
+
     List<Type> getProductTypes();
 
     List<Brand> getBrandsByTypeId(Long typeId, String sort, String dir);
