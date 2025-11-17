@@ -72,19 +72,8 @@ public class DefaultSecurityConfig {
 
     @Bean
     public RegisteredClientRepository registeredClientRepository() {
-
         RegisteredClient client = RegisteredClient.withId(UUID.randomUUID().toString())
                 .clientId("app-client")
-                .clientSecret("$2a$12$MyTjNEL1JGagTDhPTHYaOuFNTkpegx.WFXuZDRlDkH51R.QGfP3Be")
-                .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
-                .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
-                .authorizationGrantType(AuthorizationGrantType.REFRESH_TOKEN)
-                .scope(OidcScopes.OPENID)
-                .redirectUri("http://localhost:4200")
-                .build();
-
-        RegisteredClient publicClient = RegisteredClient.withId(UUID.randomUUID().toString())
-                .clientId("public-client")
                 .clientAuthenticationMethod(ClientAuthenticationMethod.NONE)
                 .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
                 .redirectUri("http://localhost:4200")
@@ -96,7 +85,7 @@ public class DefaultSecurityConfig {
                         .build()
                 )
                 .build();
-        return new InMemoryRegisteredClientRepository(client, publicClient);
+        return new InMemoryRegisteredClientRepository(client);
     }
 
     @Bean
