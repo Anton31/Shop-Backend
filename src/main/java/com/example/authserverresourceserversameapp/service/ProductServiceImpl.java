@@ -120,9 +120,9 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public List<Brand> getBrandsByTypeId(Long typeId, String sort, String dir) {
         if (typeId == null) {
-            return brandRepository.getAllByIdAfter(1L, Sort.by(Sort.Direction.fromString(dir), sort));
+            return brandRepository.findAll(Sort.by(Sort.Direction.fromString(dir), sort));
         }
-        return brandRepository.getAllByIdAfterAndTypesId(1L, typeId, Sort.by(Sort.Direction.fromString(dir), sort));
+        return brandRepository.getAllByTypesId(typeId, Sort.by(Sort.Direction.fromString(dir), sort));
     }
 
 
@@ -147,9 +147,7 @@ public class ProductServiceImpl implements ProductService {
             Brand productBrand = product.getBrand();
             productType.removeProduct(product);
             productBrand.removeProduct(product);
-            productType.removeBrand(productBrand);
         }
-        type.addBrand(brand);
         type.addProduct(product);
         brand.addProduct(product);
         product.setName(dto.getName());
