@@ -1,7 +1,6 @@
 package com.example.authserverresourceserversameapp.service;
 
 import com.example.authserverresourceserversameapp.dto.*;
-import com.example.authserverresourceserversameapp.exception.BrandExistsException;
 import com.example.authserverresourceserversameapp.exception.ProductExistsException;
 import com.example.authserverresourceserversameapp.exception.TypeExistsException;
 import com.example.authserverresourceserversameapp.model.Brand;
@@ -25,6 +24,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Objects;
 
 @Service
 public class ProductServiceImpl implements ProductService {
@@ -120,9 +120,9 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public List<Brand> getBrandsByTypeId(Long typeId, String sort, String dir) {
         if (typeId == null) {
-            return brandRepository.findAll(Sort.by(Sort.Direction.fromString(dir), sort));
+            return brandRepository.getAllByIdAfter(1L, Sort.by(Sort.Direction.fromString(dir), sort));
         }
-        return brandRepository.getAllByTypesId(typeId, Sort.by(Sort.Direction.fromString(dir), sort));
+        return brandRepository.getAllByIdAfterAndTypesId(1L, typeId, Sort.by(Sort.Direction.fromString(dir), sort));
     }
 
 
@@ -187,14 +187,14 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public long addBrand(BrandDto dto) {
         Brand brand;
+        Brand exists = brandRepository.getOneByName(dto.getName());
+        Type type = typeRepository.findById(dto.getTypeId()).orElseThrow(NoSuchElementException::new);
         if (dto.getId() == null) {
-            if (brandRepository.getOneByName(dto.getName()) != null) {
-                throw new BrandExistsException(dto.getName());
-            }
-            brand = new Brand();
+            brand = Objects.requireNonNullElseGet(exists, Brand::new);
         } else {
             brand = brandRepository.findById(dto.getId()).orElseThrow(NoSuchElementException::new);
         }
+        type.addBrand(brand);
         brand.setName(dto.getName());
         return brandRepository.save(brand).getId();
     }
@@ -217,7 +217,6 @@ public class ProductServiceImpl implements ProductService {
         Brand brand = product.getBrand();
         type.removeProduct(product);
         brand.removeProduct(product);
-        type.removeBrand(brand);
         productRepository.deleteById(id);
         return id;
     }
