@@ -1,6 +1,7 @@
 package com.example.authserverresourceserversameapp.service;
 
 import com.example.authserverresourceserversameapp.dto.*;
+import com.example.authserverresourceserversameapp.exception.BrandExistsException;
 import com.example.authserverresourceserversameapp.exception.ProductExistsException;
 import com.example.authserverresourceserversameapp.exception.TypeExistsException;
 import com.example.authserverresourceserversameapp.model.Brand;
@@ -24,7 +25,6 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.Objects;
 
 @Service
 public class ProductServiceImpl implements ProductService {
@@ -164,6 +164,7 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public long addType(TypeDto dto) {
         Type type;
+        Brand brand = brandRepository.findById(dto.getBrandId()).orElseThrow(NoSuchElementException::new);
         if (dto.getId() == null) {
             if (typeRepository.getOneByName(dto.getName()) != null) {
                 throw new TypeExistsException(dto.getName());
@@ -172,6 +173,7 @@ public class ProductServiceImpl implements ProductService {
         } else {
             type = typeRepository.findById(dto.getId()).orElseThrow(NoSuchElementException::new);
         }
+        type.addBrand(brand);
         type.setName(dto.getName());
         return typeRepository.save(type).getId();
     }
@@ -185,10 +187,12 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public long addBrand(BrandDto dto) {
         Brand brand;
-        Brand exists = brandRepository.getOneByName(dto.getName());
         Type type = typeRepository.findById(dto.getTypeId()).orElseThrow(NoSuchElementException::new);
         if (dto.getId() == null) {
-            brand = Objects.requireNonNullElseGet(exists, Brand::new);
+            if (brandRepository.getOneByName(dto.getName()) != null) {
+                throw new BrandExistsException(dto.getName());
+            }
+            brand = new Brand();
         } else {
             brand = brandRepository.findById(dto.getId()).orElseThrow(NoSuchElementException::new);
         }
