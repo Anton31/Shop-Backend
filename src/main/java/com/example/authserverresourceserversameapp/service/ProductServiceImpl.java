@@ -1,7 +1,6 @@
 package com.example.authserverresourceserversameapp.service;
 
 import com.example.authserverresourceserversameapp.dto.*;
-import com.example.authserverresourceserversameapp.exception.BrandExistsException;
 import com.example.authserverresourceserversameapp.exception.ProductExistsException;
 import com.example.authserverresourceserversameapp.exception.TypeExistsException;
 import com.example.authserverresourceserversameapp.model.Brand;
@@ -164,7 +163,6 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public long addType(TypeDto dto) {
         Type type;
-        Brand brand = brandRepository.findById(dto.getBrandId()).orElseThrow(NoSuchElementException::new);
         if (dto.getId() == null) {
             if (typeRepository.getOneByName(dto.getName()) != null) {
                 throw new TypeExistsException(dto.getName());
@@ -173,7 +171,6 @@ public class ProductServiceImpl implements ProductService {
         } else {
             type = typeRepository.findById(dto.getId()).orElseThrow(NoSuchElementException::new);
         }
-        type.addBrand(brand);
         type.setName(dto.getName());
         return typeRepository.save(type).getId();
     }
@@ -190,9 +187,10 @@ public class ProductServiceImpl implements ProductService {
         Type type = typeRepository.findById(dto.getTypeId()).orElseThrow(NoSuchElementException::new);
         if (dto.getId() == null) {
             if (brandRepository.getOneByName(dto.getName()) != null) {
-                throw new BrandExistsException(dto.getName());
+                brand = brandRepository.getOneByName(dto.getName());
+            } else {
+                brand = new Brand();
             }
-            brand = new Brand();
         } else {
             brand = brandRepository.findById(dto.getId()).orElseThrow(NoSuchElementException::new);
         }
