@@ -94,12 +94,12 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public List<Type> getAllTypes(String sort, String dir) {
-        return typeRepository.getAllByIdAfter(1L, Sort.by(Sort.Direction.fromString(dir), sort));
+        return typeRepository.findAll(Sort.by(Sort.Direction.fromString(dir), sort));
     }
 
     @Override
     public List<Brand> getAllBrands(String sort, String dir) {
-        return brandRepository.getAllByIdAfter(1L, Sort.by(Sort.Direction.fromString(dir), sort));
+        return brandRepository.findAll(Sort.by(Sort.Direction.fromString(dir), sort));
     }
 
 
