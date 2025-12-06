@@ -58,8 +58,8 @@ public class Brand {
     }
 
     public void removeProduct(Product product) {
-        this.products.remove(product);
-        product.setBrand(null);
+            this.products.remove(product);
+            product.setBrand(null);
     }
 
     @PreRemove

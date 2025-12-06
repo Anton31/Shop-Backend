@@ -32,8 +32,9 @@ public class ProductController {
     }
 
     @GetMapping("/productType")
-    public List<Type> getProductTypes() {
-        return productService.getProductTypes();
+    public List<Type> getProductTypes(@RequestParam(required = false, defaultValue = "name") String sort,
+                                      @RequestParam(required = false, defaultValue = "ASC") String dir) {
+        return productService.getProductTypes(sort, dir);
     }
 
     @GetMapping("/productBrand")

@@ -95,18 +95,18 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public List<Type> getAllTypes(String sort, String dir) {
-        return typeRepository.findAll(Sort.by(Sort.Direction.fromString(dir), sort));
+        return typeRepository.getAllByIdAfter(1L, Sort.by(Sort.Direction.fromString(dir), sort));
     }
 
     @Override
     public List<Brand> getAllBrands(String sort, String dir) {
-        return brandRepository.findAll(Sort.by(Sort.Direction.fromString(dir), sort));
+        return brandRepository.getAllByIdAfter(1L, Sort.by(Sort.Direction.fromString(dir), sort));
     }
 
 
     @Override
-    public List<Type> getProductTypes() {
-        return typeRepository.getProductTypes();
+    public List<Type> getProductTypes(String sort, String dir) {
+        return typeRepository.getProductTypes(Sort.by(Sort.Direction.fromString(dir), sort));
     }
 
 
@@ -134,8 +134,8 @@ public class ProductServiceImpl implements ProductService {
      */
     public long addProduct(ProductDto dto) {
         Product product;
-        Optional<Type> type = typeRepository.findById(dto.getTypeId());
-        Optional<Brand> brand = brandRepository.findById(dto.getBrandId());
+        Type type = typeRepository.findById(dto.getTypeId()).orElseThrow(NoSuchElementException::new);
+        Brand brand = brandRepository.findById(dto.getBrandId()).orElseThrow(NoSuchElementException::new);
         if (dto.getId() == null) {
             if (productRepository.findByName(dto.getName()) != null) {
                 throw new ProductExistsException(dto.getName());
@@ -145,15 +145,11 @@ public class ProductServiceImpl implements ProductService {
             product = productRepository.findById(dto.getId()).orElseThrow(NoSuchElementException::new);
             Type productType = product.getType();
             Brand productBrand = product.getBrand();
-            if (productType != null) {
-                productType.removeProduct(product);
-            }
-            if (productBrand != null) {
-                productBrand.removeProduct(product);
-            }
+            productType.removeProduct(product);
+            productBrand.removeProduct(product);
         }
-        type.ifPresent(value -> value.addProduct(product));
-        brand.ifPresent(value -> value.addProduct(product));
+        type.addProduct(product);
+        brand.addProduct(product);
         product.setName(dto.getName());
         product.setPrice(dto.getPrice());
         return productRepository.save(product).getId();
