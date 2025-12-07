@@ -4,8 +4,8 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 
 public class AppUser implements UserDetails {
@@ -16,8 +16,8 @@ public class AppUser implements UserDetails {
     }
 
     @Override
-    public List<? extends GrantedAuthority> getAuthorities() {
-        List<SimpleGrantedAuthority> authorities = new ArrayList<>();
+    public Set<? extends GrantedAuthority> getAuthorities() {
+        Set<SimpleGrantedAuthority> authorities = new HashSet<>();
         SimpleGrantedAuthority authority = new SimpleGrantedAuthority(user.getRole().getName());
         authorities.add(authority);
         return authorities;

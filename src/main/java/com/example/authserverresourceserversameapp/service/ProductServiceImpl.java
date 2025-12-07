@@ -24,7 +24,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.Optional;
+import java.util.Objects;
 
 @Service
 public class ProductServiceImpl implements ProductService {
@@ -185,17 +185,16 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public long addBrand(BrandDto dto) {
         Brand brand;
-        Optional<Type> type = typeRepository.findById(dto.getTypeId());
+        Type type = typeRepository.findById(dto.getTypeId()).orElseThrow(NoSuchElementException::new);
+        Brand exists = brandRepository.getOneByName(dto.getName());
         if (dto.getId() == null) {
-            if (brandRepository.getOneByName(dto.getName()) != null) {
-                brand = brandRepository.getOneByName(dto.getName());
-            } else {
-                brand = new Brand();
-            }
+            brand = Objects.requireNonNullElseGet(exists, Brand::new);
         } else {
             brand = brandRepository.findById(dto.getId()).orElseThrow(NoSuchElementException::new);
         }
-        type.ifPresent(value -> value.addBrand(brand));
+        if (!type.getBrands().contains(brand)) {
+            type.addBrand(brand);
+        }
         brand.setName(dto.getName());
         return brandRepository.save(brand).getId();
     }

@@ -77,4 +77,18 @@ public class User {
         this.orders.add(order);
         order.setUser(this);
     }
+
+    @Override
+    public final boolean equals(Object o) {
+        if (!(o instanceof User user)) return false;
+
+        return getUsername().equals(user.getUsername()) && getEmail().equals(user.getEmail());
+    }
+
+    @Override
+    public int hashCode() {
+        int result = getUsername().hashCode();
+        result = 31 * result + getEmail().hashCode();
+        return result;
+    }
 }
