@@ -12,7 +12,6 @@ public interface BrandRepository extends JpaRepository<Brand, Long> {
     List<Brand> getAllByIdAfter(long id, Sort sort);
 
     List<Brand> getAllByTypesId(long typeId, Sort sort);
-
 }
 
 

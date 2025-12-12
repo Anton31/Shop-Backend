@@ -25,6 +25,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Objects;
 
 @Service
 public class ProductServiceImpl implements ProductService {
@@ -118,7 +119,7 @@ public class ProductServiceImpl implements ProductService {
      * @return list of brands
      */
     @Override
-    public List<Brand> getBrandsByTypeId(Long typeId, String sort, String dir) {
+    public List<Brand> getAllByTypeId(Long typeId, String sort, String dir) {
         if (typeId == null) {
             return brandRepository.findAll(Sort.by(Sort.Direction.fromString(dir), sort));
         }
@@ -164,7 +165,6 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public long addType(TypeDto dto) {
         Type type;
-        Brand brand = brandRepository.findById(dto.getBrandId()).orElseThrow(NoSuchElementException::new);
         if (dto.getId() == null) {
             if (typeRepository.getOneByName(dto.getName()) != null) {
                 throw new TypeExistsException(dto.getName());
@@ -172,9 +172,6 @@ public class ProductServiceImpl implements ProductService {
             type = new Type();
         } else {
             type = typeRepository.findById(dto.getId()).orElseThrow(NoSuchElementException::new);
-        }
-        if (!brand.getName().equals("None") && !brand.getTypes().contains(type)) {
-            type.addBrand(brand);
         }
         type.setName(dto.getName());
         return typeRepository.save(type).getId();
@@ -190,15 +187,13 @@ public class ProductServiceImpl implements ProductService {
     public long addBrand(BrandDto dto) {
         Brand brand;
         Type type = typeRepository.findById(dto.getTypeId()).orElseThrow(NoSuchElementException::new);
+        Brand existingBrand = brandRepository.getOneByName(dto.getName());
         if (dto.getId() == null) {
-            if (brandRepository.getOneByName(dto.getName()) != null) {
-                throw new BrandExistsException(dto.getName());
-            }
-            brand = new Brand();
+            brand = Objects.requireNonNullElseGet(existingBrand, Brand::new);
         } else {
             brand = brandRepository.findById(dto.getId()).orElseThrow(NoSuchElementException::new);
         }
-        if (!type.getName().equals("None") && !type.getBrands().contains(brand)) {
+        if (!type.getBrands().contains(brand)) {
             type.addBrand(brand);
         }
         brand.setName(dto.getName());
