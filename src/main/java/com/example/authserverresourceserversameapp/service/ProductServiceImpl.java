@@ -25,7 +25,6 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.Objects;
 
 @Service
 public class ProductServiceImpl implements ProductService {
@@ -148,6 +147,10 @@ public class ProductServiceImpl implements ProductService {
             Brand productBrand = product.getBrand();
             productType.removeProduct(product);
             productBrand.removeProduct(product);
+            productType.removeBrand(productBrand);
+        }
+        if (!type.getBrands().contains(brand)) {
+            type.addBrand(brand);
         }
         type.addProduct(product);
         brand.addProduct(product);
@@ -186,15 +189,13 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public long addBrand(BrandDto dto) {
         Brand brand;
-        Type type = typeRepository.findById(dto.getTypeId()).orElseThrow(NoSuchElementException::new);
-        Brand existingBrand = brandRepository.getOneByName(dto.getName());
         if (dto.getId() == null) {
-            brand = Objects.requireNonNullElseGet(existingBrand, Brand::new);
+            if (brandRepository.getOneByName(dto.getName()) != null) {
+                throw new BrandExistsException(dto.getName());
+            }
+            brand = new Brand();
         } else {
             brand = brandRepository.findById(dto.getId()).orElseThrow(NoSuchElementException::new);
-        }
-        if (!type.getBrands().contains(brand)) {
-            type.addBrand(brand);
         }
         brand.setName(dto.getName());
         return brandRepository.save(brand).getId();
@@ -216,6 +217,9 @@ public class ProductServiceImpl implements ProductService {
         long id = product.getId();
         Type type = product.getType();
         Brand brand = product.getBrand();
+        if (brand.getProducts().size() == 1) {
+            type.removeBrand(brand);
+        }
         type.removeProduct(product);
         brand.removeProduct(product);
         productRepository.deleteById(id);
