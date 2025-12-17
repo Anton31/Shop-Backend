@@ -13,7 +13,7 @@ public class Brand {
     @GeneratedValue(generator = "brandGen")
     private long id;
     private String name;
-    @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, mappedBy = "brand")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "brand")
     @JsonIgnore
     private List<Product> products = new ArrayList<>();
     @ManyToMany(mappedBy = "brands")
@@ -58,8 +58,8 @@ public class Brand {
     }
 
     public void removeProduct(Product product) {
-            this.products.remove(product);
-            product.setBrand(null);
+        this.products.remove(product);
+        product.setBrand(null);
     }
 
     @PreRemove

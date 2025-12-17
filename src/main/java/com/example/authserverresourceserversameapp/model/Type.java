@@ -13,10 +13,10 @@ public class Type {
     @GeneratedValue(generator = "typeGen")
     private long id;
     private String name;
-    @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, mappedBy = "type")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "type")
     @JsonIgnore
     private List<Product> products = new ArrayList<>();
-    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @ManyToMany
     @JoinTable(name = "type_brand", joinColumns = @JoinColumn(name = "type_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "brand_id", referencedColumnName = "id")
     )
@@ -61,13 +61,13 @@ public class Type {
     }
 
     public void removeProduct(Product product) {
-            this.products.remove(product);
-            product.setType(null);
+        this.products.remove(product);
+        product.setType(null);
     }
 
     public void addBrand(Brand brand) {
-            this.brands.add(brand);
-            brand.getTypes().add(this);
+        this.brands.add(brand);
+        brand.getTypes().add(this);
     }
 
     public void removeBrand(Brand brand) {
