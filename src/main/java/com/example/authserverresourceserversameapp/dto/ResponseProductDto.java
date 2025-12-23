@@ -6,9 +6,10 @@ import java.util.List;
 
 public class ResponseProductDto {
     private List<Product> products;
-    private long pageSize;
-    private long currentPage;
     private long totalProducts;
+
+    public ResponseProductDto() {
+    }
 
     public List<Product> getProducts() {
         return products;
@@ -16,22 +17,6 @@ public class ResponseProductDto {
 
     public void setProducts(List<Product> products) {
         this.products = products;
-    }
-
-    public long getPageSize() {
-        return pageSize;
-    }
-
-    public void setPageSize(long pageSize) {
-        this.pageSize = pageSize;
-    }
-
-    public long getCurrentPage() {
-        return currentPage;
-    }
-
-    public void setCurrentPage(long currentPage) {
-        this.currentPage = currentPage;
     }
 
     public long getTotalProducts() {

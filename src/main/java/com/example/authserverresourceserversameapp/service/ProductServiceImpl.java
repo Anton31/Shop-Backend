@@ -12,8 +12,6 @@ import com.example.authserverresourceserversameapp.repository.BrandRepository;
 import com.example.authserverresourceserversameapp.repository.PhotoRepository;
 import com.example.authserverresourceserversameapp.repository.ProductRepository;
 import com.example.authserverresourceserversameapp.repository.TypeRepository;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -53,16 +51,14 @@ public class ProductServiceImpl implements ProductService {
      * @param brandId id of brand
      * @param sort    field for sorting
      * @param dir     direction of sorting
-     * @param page    index of page
-     * @param size    size of page
      * @return dto with list of products
      */
     @Override
     public ResponseProductDto getProducts(Long typeId, Long brandId,
-                                          String sort, String dir,
-                                          int page, int size) {
+                                          String sort, String dir) {
+
         ResponseProductDto dto = new ResponseProductDto();
-        Page<Product> products;
+        List<Product> products;
         if (sort.equals("type")) {
             sort = "type.name";
         }
@@ -70,21 +66,18 @@ public class ProductServiceImpl implements ProductService {
             sort = "brand.name";
         }
         if (typeId == null && brandId == null) {
-            products = productRepository.findAll(PageRequest.of(page, size, Sort.Direction.fromString(dir), sort));
+            products = productRepository.findAll(Sort.by(Sort.Direction.fromString(dir), sort));
         } else if (typeId != null && brandId == null) {
-            products = productRepository.getAllByTypeId(typeId,
-                    PageRequest.of(page, size, Sort.Direction.fromString(dir), sort));
+            products = productRepository.getAllByTypeId(typeId, Sort.by(Sort.Direction.fromString(dir), sort));
         } else if (typeId == null) {
             products = productRepository.getAllByBrandId(brandId,
-                    PageRequest.of(page, size, Sort.Direction.fromString(dir), sort));
+                    Sort.by(Sort.Direction.fromString(dir), sort));
         } else {
             products = productRepository.getAllByTypeIdAndBrandId(typeId,
-                    brandId, PageRequest.of(page, size, Sort.Direction.fromString(dir), sort));
+                    brandId, Sort.by(Sort.Direction.fromString(dir), sort));
         }
-        dto.setProducts(products.getContent());
-        dto.setPageSize(products.getSize());
-        dto.setCurrentPage(products.getNumber());
-        dto.setTotalProducts(products.getTotalElements());
+        dto.setProducts(products);
+        dto.setTotalProducts(products.size());
         return dto;
     }
 
@@ -118,7 +111,7 @@ public class ProductServiceImpl implements ProductService {
      * @return list of brands
      */
     @Override
-    public List<Brand> getAllBrandsByTypeId(Long typeId, String sort, String dir) {
+    public List<Brand> getProductBrands(Long typeId, String sort, String dir) {
         if (typeId == null) {
             return brandRepository.findAll(Sort.by(Sort.Direction.fromString(dir), sort));
         }
@@ -219,7 +212,7 @@ public class ProductServiceImpl implements ProductService {
         Brand brand = product.getBrand();
         type.removeProduct(product);
         brand.removeProduct(product);
-        if (productRepository.getAllByTypeIdAndBrandId(type.getId(), brand.getId()).size() == 1) {
+        if (productRepository.getAllByTypeIdAndBrandId(type.getId(), brand.getId(), Sort.by("name")).size() == 1) {
             type.removeBrand(brand);
         }
         productRepository.deleteById(id);

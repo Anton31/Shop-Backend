@@ -18,9 +18,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
@@ -73,10 +70,10 @@ public class ProductServiceTest {
         product.setName("Mercedes S600");
         product.addPhoto(photo);
         brand = new Brand();
-        brand.setId(1L);
+        brand.setId(2L);
         brand.setName("Mercedes");
         type = new Type();
-        type.setId(1L);
+        type.setId(2L);
         type.setName("Car");
         type.addProduct(product);
         brand.addProduct(product);
@@ -119,10 +116,10 @@ public class ProductServiceTest {
         products.add(product1);
         ResponseProductDto dto = new ResponseProductDto();
         dto.setProducts(products);
-        Page<Product> page = new PageImpl<>(products);
-        given(productRepository.findAll(PageRequest.of(0, 10, Sort.Direction.valueOf("ASC"),
+        List<Product> page = new ArrayList<>(products);
+        given(productRepository.findAll(Sort.by(Sort.Direction.valueOf("ASC"),
                 "name"))).willReturn(page);
-        dto = productService.getProducts(null, null, "name", "ASC", 0, 10);
+        dto = productService.getProducts(null, null, "name", "ASC");
 
         assertThat(dto.getProducts().size()).isEqualTo(2);
         assertThat(dto.getProducts().get(0).getId()).isEqualTo(1L);
@@ -142,7 +139,7 @@ public class ProductServiceTest {
         given(typeRepository.findById(anyLong())).willReturn(Optional.ofNullable(type));
         given(brandRepository.findById(anyLong())).willReturn(Optional.ofNullable(brand));
         long productId = productService.addProduct(dto);
-        assertEquals(productId, 3L);
+        assertEquals(3L, productId);
     }
 
     @Test
@@ -166,11 +163,11 @@ public class ProductServiceTest {
         List<Type> types = new ArrayList<>();
         types.add(type);
         types.add(type1);
-        given(typeRepository.getAllByNameNotLike(anyString(), any(Sort.class))).willReturn(types);
+        given(typeRepository.getAllByIdAfter(anyLong(), any(Sort.class))).willReturn(types);
         List<Type> serviceTypes = productService.getAllTypes("name", "ASC");
         assertThat(serviceTypes).isNotNull();
         assertThat(serviceTypes.size()).isEqualTo(2);
-        assertThat(serviceTypes.get(0).getId()).isEqualTo(1L);
+        assertThat(serviceTypes.get(0).getId()).isEqualTo(2L);
         assertThat(serviceTypes.get(0).getName()).isEqualTo("Car");
         assertThat(serviceTypes.get(1).getId()).isEqualTo(2L);
         assertThat(serviceTypes.get(1).getName()).isEqualTo("Smartphone");
@@ -179,7 +176,7 @@ public class ProductServiceTest {
     @Test
     public void TypeExistsExceptionTest() {
         TypeDto dto = new TypeDto();
-        dto.setId(0L);
+        dto.setId(null);
         dto.setName("Car");
         given(typeRepository.getOneByName(anyString())).willThrow(new TypeExistsException("Car"));
         TypeExistsException exception = assertThrows(TypeExistsException.class, () -> productService.addType(dto));
@@ -189,7 +186,7 @@ public class ProductServiceTest {
     @Test
     public void BrandExistsExceptionTest() {
         BrandDto dto = new BrandDto();
-        dto.setId(0L);
+        dto.setId(null);
         dto.setName("Samsung");
         given(brandRepository.getOneByName(anyString())).willThrow(new BrandExistsException("Samsung"));
         BrandExistsException exception = assertThrows(BrandExistsException.class, () -> productService.addBrand(dto));

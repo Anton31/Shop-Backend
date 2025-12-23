@@ -10,7 +10,7 @@ public interface UserService {
 
     User registerNewUserAccount(UserDto accountDto) throws MessagingException;
 
-    void editExistingUserAccount(UserDto dto);
+    void editExistingUserAccount(UserDto dto, User user);
 
     VerificationToken getToken(String token);
 

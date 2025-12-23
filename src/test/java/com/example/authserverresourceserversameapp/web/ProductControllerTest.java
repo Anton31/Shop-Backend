@@ -51,10 +51,10 @@ public class ProductControllerTest {
         product.setId(1L);
         product.setName("Mercedes S600");
         type = new Type();
-        type.setId(1L);
+        type.setId(2L);
         type.setName("Car");
         brand = new Brand();
-        brand.setId(1L);
+        brand.setId(2L);
         brand.setName("Mercedes");
         photo = new Photo();
         photo.setId(1L);
@@ -73,8 +73,7 @@ public class ProductControllerTest {
         products.add(product1);
         dto.setProducts(products);
         dto.setTotalProducts(2L);
-        dto.setPageSize(10);
-        given(productService.getProducts(any(), any(), anyString(), anyString(), anyInt(), anyInt()))
+        given(productService.getProducts(any(), any(), anyString(), anyString()))
                 .willReturn(dto);
         this.mockMvc.perform(get("/products/product").accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
@@ -98,7 +97,7 @@ public class ProductControllerTest {
         this.mockMvc.perform(get("/products/type").accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(2)))
-                .andExpect(jsonPath("$[0].id").value(1))
+                .andExpect(jsonPath("$[0].id").value(2))
                 .andExpect(jsonPath("$[0].name").value("Car"))
                 .andExpect(jsonPath("$[1].id").value(2))
                 .andExpect(jsonPath("$[1].name").value("Smartphone"));
@@ -109,18 +108,18 @@ public class ProductControllerTest {
     @WithMockUser
     public void getBrandsTest() throws Exception {
         Brand brand1 = new Brand();
-        brand1.setId(2L);
+        brand1.setId(3L);
         brand1.setName("BMW");
         List<Brand> brands = new ArrayList<>();
         brands.add(brand);
         brands.add(brand1);
-        given(productService.getAllBrandsByTypeId(anyLong(), anyString(), anyString())).willReturn(brands);
-        this.mockMvc.perform(get("/products/brand?typeId=1").accept(MediaType.APPLICATION_JSON))
+        given(productService.getProductBrands(anyLong(), anyString(), anyString())).willReturn(brands);
+        this.mockMvc.perform(get("/products/productBrand?typeId=2").accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(2)))
-                .andExpect(jsonPath("$[0].id").value(1))
+                .andExpect(jsonPath("$[0].id").value(2))
                 .andExpect(jsonPath("$[0].name").value("Mercedes"))
-                .andExpect(jsonPath("$[1].id").value(2))
+                .andExpect(jsonPath("$[1].id").value(3))
                 .andExpect(jsonPath("$[1].name").value("BMW"));
     }
 

@@ -10,8 +10,8 @@ import java.util.List;
 
 public interface ProductService {
 
-    ResponseProductDto getProducts(Long typeId, Long brandId, String sort,
-                                   String dir, int page, int size);
+    ResponseProductDto getProducts(Long typeId, Long brandId,
+                                   String sort, String dir);
 
     Product getProduct(long id);
 
@@ -21,7 +21,7 @@ public interface ProductService {
 
     List<Type> getProductTypes(String sort, String dir);
 
-    List<Brand> getAllBrandsByTypeId(Long typeId, String sort, String dir);
+    List<Brand> getProductBrands(Long typeId, String sort, String dir);
 
     long addProduct(ProductDto dto);
 

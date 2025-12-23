@@ -80,11 +80,10 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void editExistingUserAccount(UserDto dto) {
+    public void editExistingUserAccount(UserDto dto, User user) {
         if (!dto.getPassword().equals(dto.getPasswordConfirmed())) {
             throw new PasswordsDontMatchException();
         }
-        User user = userRepository.getByUsername(dto.getUsername());
         user.setPassword(passwordEncoder.encode(dto.getPassword()));
         userRepository.save(user);
     }

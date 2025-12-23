@@ -58,9 +58,10 @@ public class UserController {
 
     @PutMapping
     @ResponseBody
-    public SuccessResponse editUser(UserDto dto) {
+    public SuccessResponse editUser(UserDto dto, Principal principal) {
+        User user = userService.findByUsername(principal.getName());
         String text = "Password changed";
-        userService.editExistingUserAccount(dto);
+        userService.editExistingUserAccount(dto, user);
         return new SuccessResponse(text);
     }
 }
