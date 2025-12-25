@@ -86,17 +86,23 @@ public class ProductServiceImpl implements ProductService {
         return productRepository.findById(id).get();
     }
 
+    /**
+     *
+     * @param sort parameter of sorting
+     * @param dir  direction of sorting
+     * @return list of types
+     */
     @Override
     public List<Type> getAllTypes(String sort, String dir) {
         return typeRepository.getAllByIdAfter(1L, Sort.by(Sort.Direction.fromString(dir), sort));
     }
 
-    @Override
-    public List<Brand> getAllBrands(String sort, String dir) {
-        return brandRepository.getAllByIdAfter(1L, Sort.by(Sort.Direction.fromString(dir), sort));
-    }
-
-
+    /**
+     *
+     * @param sort parameter of sorting
+     * @param dir  direction of sorting
+     * @return list of types
+     */
     @Override
     public List<Type> getProductTypes(String sort, String dir) {
         return typeRepository.getProductTypes(Sort.by(Sort.Direction.fromString(dir), sort));
@@ -113,9 +119,9 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public List<Brand> getProductBrands(Long typeId, String sort, String dir) {
         if (typeId == null) {
-            return brandRepository.findAll(Sort.by(Sort.Direction.fromString(dir), sort));
+            return brandRepository.getAllByIdAfter(1L, Sort.by(Sort.Direction.fromString(dir), sort));
         }
-        return brandRepository.getAllByTypesId(typeId, Sort.by(Sort.Direction.fromString(dir), sort));
+        return brandRepository.getAllByIdAfterAndTypesId(1L, typeId, Sort.by(Sort.Direction.fromString(dir), sort));
     }
 
 
@@ -134,6 +140,11 @@ public class ProductServiceImpl implements ProductService {
                 throw new ProductExistsException(dto.getName());
             }
             product = new Product();
+            type.addProduct(product);
+            brand.addProduct(product);
+            if (!type.getBrands().contains(brand)) {
+                type.addBrand(brand);
+            }
         } else {
             product = productRepository.findById(dto.getId()).orElseThrow(NoSuchElementException::new);
             Type productType = product.getType();
@@ -141,12 +152,10 @@ public class ProductServiceImpl implements ProductService {
             productType.removeProduct(product);
             productBrand.removeProduct(product);
             productType.removeBrand(productBrand);
-        }
-        if (!type.getBrands().contains(brand)) {
+            type.addProduct(product);
+            brand.addProduct(product);
             type.addBrand(brand);
         }
-        type.addProduct(product);
-        brand.addProduct(product);
         product.setName(dto.getName());
         product.setPrice(dto.getPrice());
         return productRepository.save(product).getId();
