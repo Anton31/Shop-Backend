@@ -1,6 +1,9 @@
 package com.example.authserverresourceserversameapp.service;
 
-import com.example.authserverresourceserversameapp.dto.*;
+import com.example.authserverresourceserversameapp.dto.BrandDto;
+import com.example.authserverresourceserversameapp.dto.PhotoDto;
+import com.example.authserverresourceserversameapp.dto.ProductDto;
+import com.example.authserverresourceserversameapp.dto.TypeDto;
 import com.example.authserverresourceserversameapp.exception.BrandExistsException;
 import com.example.authserverresourceserversameapp.exception.ProductExistsException;
 import com.example.authserverresourceserversameapp.exception.TypeExistsException;
@@ -114,18 +117,16 @@ public class ProductServiceTest {
         List<Product> products = new ArrayList<>();
         products.add(product);
         products.add(product1);
-        ResponseProductDto dto = new ResponseProductDto();
-        dto.setProducts(products);
         List<Product> page = new ArrayList<>(products);
         given(productRepository.findAll(Sort.by(Sort.Direction.valueOf("ASC"),
                 "name"))).willReturn(page);
-        dto = productService.getProducts(null, null, "name", "ASC");
+        products = productService.getProducts(null, null, "name", "ASC");
 
-        assertThat(dto.getProducts().size()).isEqualTo(2);
-        assertThat(dto.getProducts().get(0).getId()).isEqualTo(1L);
-        assertThat(dto.getProducts().get(0).getName()).isEqualTo("Mercedes S600");
-        assertThat(dto.getProducts().get(1).getId()).isEqualTo(2L);
-        assertThat(dto.getProducts().get(1).getName()).isEqualTo("BMW 750i");
+        assertThat(products.size()).isEqualTo(2);
+        assertThat(products.get(0).getId()).isEqualTo(1L);
+        assertThat(products.get(0).getName()).isEqualTo("Mercedes S600");
+        assertThat(products.get(1).getId()).isEqualTo(2L);
+        assertThat(products.get(1).getName()).isEqualTo("BMW 750i");
     }
 
     @Test

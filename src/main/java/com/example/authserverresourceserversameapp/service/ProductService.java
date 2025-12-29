@@ -1,6 +1,9 @@
 package com.example.authserverresourceserversameapp.service;
 
-import com.example.authserverresourceserversameapp.dto.*;
+import com.example.authserverresourceserversameapp.dto.BrandDto;
+import com.example.authserverresourceserversameapp.dto.PhotoDto;
+import com.example.authserverresourceserversameapp.dto.ProductDto;
+import com.example.authserverresourceserversameapp.dto.TypeDto;
 import com.example.authserverresourceserversameapp.model.Brand;
 import com.example.authserverresourceserversameapp.model.Product;
 import com.example.authserverresourceserversameapp.model.Type;
@@ -10,8 +13,8 @@ import java.util.List;
 
 public interface ProductService {
 
-    ResponseProductDto getProducts(Long typeId, Long brandId,
-                                   String sort, String dir);
+    List<Product> getProducts(Long typeId, Long brandId,
+                              String sort, String dir);
 
     Product getProduct(long id);
 

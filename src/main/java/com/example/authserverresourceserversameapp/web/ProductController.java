@@ -1,6 +1,9 @@
 package com.example.authserverresourceserversameapp.web;
 
-import com.example.authserverresourceserversameapp.dto.*;
+import com.example.authserverresourceserversameapp.dto.BrandDto;
+import com.example.authserverresourceserversameapp.dto.PhotoDto;
+import com.example.authserverresourceserversameapp.dto.ProductDto;
+import com.example.authserverresourceserversameapp.dto.TypeDto;
 import com.example.authserverresourceserversameapp.model.Brand;
 import com.example.authserverresourceserversameapp.model.Product;
 import com.example.authserverresourceserversameapp.model.Type;
@@ -45,10 +48,10 @@ public class ProductController {
     }
 
     @GetMapping(value = "/product")
-    public ResponseProductDto getProducts(@RequestParam(required = false) Long typeId,
-                                          @RequestParam(required = false) Long brandId,
-                                          @RequestParam(required = false, defaultValue = "name") String sort,
-                                          @RequestParam(required = false, defaultValue = "ASC") String dir) {
+    public List<Product> getProducts(@RequestParam(required = false) Long typeId,
+                                     @RequestParam(required = false) Long brandId,
+                                     @RequestParam(required = false, defaultValue = "name") String sort,
+                                     @RequestParam(required = false, defaultValue = "ASC") String dir) {
         return productService.getProducts(typeId, brandId, sort, dir);
     }
 

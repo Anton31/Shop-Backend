@@ -1,6 +1,9 @@
 package com.example.authserverresourceserversameapp.web;
 
-import com.example.authserverresourceserversameapp.dto.*;
+import com.example.authserverresourceserversameapp.dto.BrandDto;
+import com.example.authserverresourceserversameapp.dto.PhotoDto;
+import com.example.authserverresourceserversameapp.dto.ProductDto;
+import com.example.authserverresourceserversameapp.dto.TypeDto;
 import com.example.authserverresourceserversameapp.exception.BrandExistsException;
 import com.example.authserverresourceserversameapp.exception.ProductExistsException;
 import com.example.authserverresourceserversameapp.exception.TypeExistsException;
@@ -36,6 +39,7 @@ public class ProductControllerTest {
 
     @MockitoBean
     AppUserDetailsService userDetailsService;
+    Photo photo;
     @Autowired
     private MockMvc mockMvc;
     @MockitoBean
@@ -43,7 +47,6 @@ public class ProductControllerTest {
     private Type type;
     private Brand brand;
     private Product product;
-    Photo photo;
 
     @BeforeEach
     public void setup() {
@@ -64,24 +67,23 @@ public class ProductControllerTest {
     @Test
     @WithMockUser
     public void getProductsTest() throws Exception {
-        ResponseProductDto dto = new ResponseProductDto();
         Product product1 = new Product();
         product1.setId(2L);
         product1.setName("BMW 750i");
         List<Product> products = new ArrayList<>();
         products.add(product);
         products.add(product1);
-        dto.setProducts(products);
-        dto.setTotalProducts(2L);
+
+
         given(productService.getProducts(any(), any(), anyString(), anyString()))
-                .willReturn(dto);
+                .willReturn(products);
         this.mockMvc.perform(get("/products/product").accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.products", hasSize(2)))
-                .andExpect(jsonPath("$.products[0].id").value(1))
-                .andExpect(jsonPath("$.products[0].name").value("Mercedes S600"))
-                .andExpect(jsonPath("$.products[1].id").value(2))
-                .andExpect(jsonPath("$.products[1].name").value("BMW 750i"));
+                .andExpect(jsonPath("$", hasSize(2)))
+                .andExpect(jsonPath("$.[0].id").value(1))
+                .andExpect(jsonPath("$.[0].name").value("Mercedes S600"))
+                .andExpect(jsonPath("$.[1].id").value(2))
+                .andExpect(jsonPath("$.[1].name").value("BMW 750i"));
     }
 
     @Test

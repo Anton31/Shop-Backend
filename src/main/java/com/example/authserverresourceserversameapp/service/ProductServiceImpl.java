@@ -1,6 +1,9 @@
 package com.example.authserverresourceserversameapp.service;
 
-import com.example.authserverresourceserversameapp.dto.*;
+import com.example.authserverresourceserversameapp.dto.BrandDto;
+import com.example.authserverresourceserversameapp.dto.PhotoDto;
+import com.example.authserverresourceserversameapp.dto.ProductDto;
+import com.example.authserverresourceserversameapp.dto.TypeDto;
 import com.example.authserverresourceserversameapp.exception.BrandExistsException;
 import com.example.authserverresourceserversameapp.exception.ProductExistsException;
 import com.example.authserverresourceserversameapp.exception.TypeExistsException;
@@ -54,10 +57,9 @@ public class ProductServiceImpl implements ProductService {
      * @return dto with list of products
      */
     @Override
-    public ResponseProductDto getProducts(Long typeId, Long brandId,
-                                          String sort, String dir) {
+    public List<Product> getProducts(Long typeId, Long brandId,
+                                     String sort, String dir) {
 
-        ResponseProductDto dto = new ResponseProductDto();
         List<Product> products;
         if (sort.equals("type")) {
             sort = "type.name";
@@ -76,9 +78,8 @@ public class ProductServiceImpl implements ProductService {
             products = productRepository.getAllByTypeIdAndBrandId(typeId,
                     brandId, Sort.by(Sort.Direction.fromString(dir), sort));
         }
-        dto.setProducts(products);
-        dto.setTotalProducts(products.size());
-        return dto;
+
+        return products;
     }
 
     @Override
