@@ -2,6 +2,7 @@ package com.example.authserverresourceserversameapp.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -9,6 +10,21 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 
 @ControllerAdvice
 public class ProductControllerExceptionHandler {
+
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<ErrorResponse> handleValidationExceptions(
+            MethodArgumentNotValidException ex) {
+        StringBuilder sb = new StringBuilder();
+        ex.getAllErrors().forEach((error) -> {
+            String errorMessage = error.getDefaultMessage();
+            sb.append(errorMessage).append("; ");
+        });
+        ErrorResponse response = new ErrorResponse(sb.toString());
+        return ResponseEntity.status(400).body(response);
+    }
+
     @ExceptionHandler(UserExistsException.class)
     @ResponseBody
     @ResponseStatus(HttpStatus.CONFLICT)

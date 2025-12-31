@@ -8,6 +8,7 @@ import com.example.authserverresourceserversameapp.model.Brand;
 import com.example.authserverresourceserversameapp.model.Product;
 import com.example.authserverresourceserversameapp.model.Type;
 import com.example.authserverresourceserversameapp.service.ProductService;
+import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
@@ -61,7 +62,7 @@ public class ProductController {
     }
 
     @PostMapping("/product")
-    public long addProduct(@RequestBody ProductDto dto) {
+    public long addProduct(@Valid @RequestBody ProductDto dto) {
         return productService.addProduct(dto);
     }
 

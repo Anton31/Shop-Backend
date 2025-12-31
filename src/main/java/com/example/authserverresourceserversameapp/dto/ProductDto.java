@@ -1,17 +1,17 @@
 package com.example.authserverresourceserversameapp.dto;
 
 
-import org.springframework.web.multipart.MultipartFile;
-
-import java.util.List;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 
 public class ProductDto {
     private Long id;
     private long typeId;
     private long brandId;
+    @NotBlank(message = "Name is mandatory")
+    @Size(min = 2, max = 50, message = "Name must be between 2 and 50 characters")
     private String name;
     private int price;
-    private List<MultipartFile> photos;
 
     public Long getId() {
         return id;
@@ -53,11 +53,4 @@ public class ProductDto {
         this.price = price;
     }
 
-    public List<MultipartFile> getPhotos() {
-        return photos;
-    }
-
-    public void setPhotos(List<MultipartFile> photos) {
-        this.photos = photos;
-    }
 }
