@@ -25,6 +25,9 @@ public class OrderController {
 
     @GetMapping
     public Cart getCart(Principal principal) {
+        if(principal == null){
+            return null;
+        }
         User user = userService.findByUsername(principal.getName());
         return orderService.getCartByUser(user);
     }

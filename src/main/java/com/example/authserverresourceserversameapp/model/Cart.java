@@ -9,11 +9,13 @@ import java.util.List;
 @Entity
 public class Cart {
     @Id
-    @SequenceGenerator(name = "cartGen", sequenceName = "cartSeq", initialValue = 10)
+    @SequenceGenerator(name = "cartGen", sequenceName = "cartSeq", initialValue = 20)
     @GeneratedValue(generator = "cartGen")
-    private long id;
+    private Long id;
+    private transient List<Long> cartProductsIds = new ArrayList<>();
     private transient long totalPrice;
     private transient long totalQuantity;
+
     @OneToOne
     private User user;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "cart")
@@ -22,11 +24,11 @@ public class Cart {
     public Cart() {
     }
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -44,6 +46,11 @@ public class Cart {
 
     public void setItems(List<Item> items) {
         this.items = items;
+    }
+
+    public List<Long> getCartProductsIds() {
+        this.items.forEach(x -> this.cartProductsIds.add(x.getProduct().getId()));
+        return this.cartProductsIds;
     }
 
     public long getTotalPrice() {

@@ -6,7 +6,7 @@ import jakarta.persistence.*;
 @Entity
 public class Item {
     @Id
-    @SequenceGenerator(name = "itemGen", sequenceName = "itemSeq", initialValue = 10)
+    @SequenceGenerator(name = "itemGen", sequenceName = "itemSeq", initialValue = 20)
     @GeneratedValue(generator = "itemGen")
     private long id;
     private long quantity;

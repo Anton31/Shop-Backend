@@ -93,12 +93,12 @@ public class ProductController {
     }
 
     @PostMapping("/type")
-    public long addType(TypeDto dto) {
+    public long addType(@Valid @RequestBody TypeDto dto) {
         return productService.addType(dto);
     }
 
     @PutMapping("/type")
-    public long editType(TypeDto dto) {
+    public long editType(@Valid @RequestBody TypeDto dto) {
         return productService.addType(dto);
     }
 
