@@ -9,7 +9,7 @@ public class ProductDto {
     private long typeId;
     private long brandId;
     @NotBlank(message = "Name is mandatory")
-    @Size(min = 2, max = 50, message = "Name must be between 2 and 50 characters")
+    @Size(min = 3, max = 16, message = "Name must be between 3 and 16 characters")
     private String name;
     private int price;
 

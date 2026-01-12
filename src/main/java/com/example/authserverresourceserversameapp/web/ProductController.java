@@ -67,7 +67,7 @@ public class ProductController {
     }
 
     @PutMapping("/product")
-    public long editProduct(@RequestBody ProductDto dto) {
+    public long editProduct(@Valid @RequestBody ProductDto dto) {
         return productService.addProduct(dto);
     }
 

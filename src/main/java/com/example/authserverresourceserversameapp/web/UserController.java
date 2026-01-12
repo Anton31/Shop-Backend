@@ -49,7 +49,7 @@ public class UserController {
     @ResponseBody
     public UserInfo getUserInfo(Principal principal) {
         if (principal == null) {
-            return null;
+            return new UserInfo("none", "none");
         } else {
             User user = userService.findByUsername(principal.getName());
             return new UserInfo(user.getUsername(), user.getRole().getName());
