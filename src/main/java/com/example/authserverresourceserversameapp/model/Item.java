@@ -8,7 +8,7 @@ public class Item {
     @Id
     @SequenceGenerator(name = "itemGen", sequenceName = "itemSeq", initialValue = 20)
     @GeneratedValue(generator = "itemGen")
-    private long id;
+    private Long id;
     private long quantity;
     private transient long totalPrice;
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
@@ -23,11 +23,11 @@ public class Item {
     public Item() {
     }
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

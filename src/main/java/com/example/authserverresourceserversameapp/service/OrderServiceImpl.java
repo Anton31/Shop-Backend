@@ -3,7 +3,10 @@ package com.example.authserverresourceserversameapp.service;
 import com.example.authserverresourceserversameapp.dto.ItemDto;
 import com.example.authserverresourceserversameapp.dto.OrderDto;
 import com.example.authserverresourceserversameapp.model.*;
-import com.example.authserverresourceserversameapp.repository.*;
+import com.example.authserverresourceserversameapp.repository.CartRepository;
+import com.example.authserverresourceserversameapp.repository.ItemRepository;
+import com.example.authserverresourceserversameapp.repository.OrderRepository;
+import com.example.authserverresourceserversameapp.repository.ProductRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -15,18 +18,16 @@ public class OrderServiceImpl implements OrderService {
     private final ItemRepository itemRepository;
     private final CartRepository cartRepository;
     private final OrderRepository orderRepository;
-    private final UserRepository userRepository;
+
 
     public OrderServiceImpl(ProductRepository productRepository,
                             ItemRepository itemRepository,
                             CartRepository cartRepository,
-                            OrderRepository orderRepository,
-                            UserRepository userRepository) {
+                            OrderRepository orderRepository) {
         this.productRepository = productRepository;
         this.itemRepository = itemRepository;
         this.cartRepository = cartRepository;
         this.orderRepository = orderRepository;
-        this.userRepository = userRepository;
     }
 
     /**

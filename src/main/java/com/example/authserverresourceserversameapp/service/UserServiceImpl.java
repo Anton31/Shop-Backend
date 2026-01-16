@@ -71,9 +71,6 @@ public class UserServiceImpl implements UserService {
         }
 
         User registered = userRepository.save(user);
-        Cart cart = new Cart();
-        cart.setUser(registered);
-        cartRepository.save(cart);
         MimeMessage message = constructVerificationTokenEmail(registered);
         mailSender.send(message);
         return registered;
