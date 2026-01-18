@@ -78,23 +78,24 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public Order getOrders(User user) {
-        return orderRepository.getByUser(user);
+    public List<Order> getOrders(User user) {
+        return orderRepository.getAllByUser(user);
     }
 
     @Override
-    public Order addOrder(OrderDto dto, User user) {
+    public List<Order> addOrder(OrderDto dto, User user) {
         Cart cart = cartRepository.getByUser(user);
-        Order order = orderRepository.getByUser(user);
+        Order order = new Order();
+        user.addOrder(order);
         List<Item> items = new ArrayList<>(cart.getItems());
         for (Item item : items) {
             cart.removeItem(item);
             order.addItem(item);
         }
-        order.setDescription(dto.getDescription());
         order.setUsername(dto.getUsername());
         order.setEmail(dto.getEmail());
-        return orderRepository.save(order);
+        orderRepository.save(order);
+        return orderRepository.getAllByUser(user);
     }
 
     /**
@@ -112,14 +113,16 @@ public class OrderServiceImpl implements OrderService {
         return itemId;
     }
 
-//    /**
-//     * @param orderId id of order to delete
-//     * @return id of deleted order
-//     */
-//    @Override
-//    public long deleteOrder(long orderId) {
-//        Order order = orderRepository.findById(orderId).get();
-//        orderRepository.delete(order);
-//        return orderId;
-//    }
+
+    @Override
+    public long deleteOrder(long itemId) {
+        Item item = itemRepository.findById(itemId).get();
+        Order order = item.getOrder();
+        order.removeItem(item);
+        itemRepository.delete(item);
+        if (order.getItems().isEmpty()) {
+            orderRepository.delete(order);
+        }
+        return itemId;
+    }
 }

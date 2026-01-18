@@ -10,6 +10,7 @@ import com.example.authserverresourceserversameapp.service.UserService;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
+import java.util.List;
 
 @RestController
 @RequestMapping("/cart")
@@ -48,19 +49,19 @@ public class OrderController {
     }
 
     @GetMapping("/order")
-    public Order getOrder(Principal principal) {
+    public List<Order> getOrder(Principal principal) {
         User user = userService.findByUsername(principal.getName());
         return orderService.getOrders(user);
     }
 
     @PostMapping("/order")
-    public Order addOrder(@RequestBody OrderDto dto, Principal principal) {
+    public List<Order> addOrder(@RequestBody OrderDto dto, Principal principal) {
         User user = userService.findByUsername(principal.getName());
         return orderService.addOrder(dto, user);
     }
 
-//    @DeleteMapping("/order/{orderId}")
-//    public long deleteOrder(@PathVariable long orderId) {
-//        return orderService.deleteOrder(orderId);
-//    }
+    @DeleteMapping("/order/{itemId}")
+    public long deleteOrder(@PathVariable long itemId) {
+        return orderService.deleteOrder(itemId);
+    }
 }

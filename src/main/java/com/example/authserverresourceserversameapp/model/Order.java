@@ -1,5 +1,6 @@
 package com.example.authserverresourceserversameapp.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.util.ArrayList;
@@ -12,12 +13,11 @@ public class Order {
     @SequenceGenerator(name = "orderGen", sequenceName = "orderSeq", initialValue = 20)
     @GeneratedValue(generator = "orderGen")
     private Long id;
-    private String description;
     private String username;
     private String email;
     private transient long totalPrice;
     private transient long totalQuantity;
-    @OneToOne
+    @ManyToOne
     private User user;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "order")
     private List<Item> items = new ArrayList<>();
@@ -31,14 +31,6 @@ public class Order {
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
     }
 
     public String getUsername() {
@@ -76,6 +68,11 @@ public class Order {
     public void addItem(Item item) {
         item.setOrder(this);
         this.items.add(item);
+    }
+
+    public void removeItem(Item item) {
+        item.setOrder(null);
+        this.items.remove(item);
     }
 
     public long getTotalPrice() {
