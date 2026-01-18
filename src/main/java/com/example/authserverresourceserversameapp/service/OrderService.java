@@ -15,7 +15,7 @@ public interface OrderService {
 
     Cart getCartByUser(User user);
 
-    List<Order> getOrders(User user);
+    Order getOrders(User user);
 
     Order addOrder(OrderDto dto, User user);
 

@@ -10,7 +10,6 @@ import com.example.authserverresourceserversameapp.service.UserService;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
-import java.util.List;
 
 @RestController
 @RequestMapping("/cart")
@@ -25,7 +24,7 @@ public class OrderController {
 
     @GetMapping
     public Cart getCart(Principal principal) {
-        if(principal == null){
+        if (principal == null) {
             return null;
         }
         User user = userService.findByUsername(principal.getName());
@@ -49,7 +48,7 @@ public class OrderController {
     }
 
     @GetMapping("/order")
-    public List<Order> getOrder(Principal principal) {
+    public Order getOrder(Principal principal) {
         User user = userService.findByUsername(principal.getName());
         return orderService.getOrders(user);
     }

@@ -78,20 +78,19 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public List<Order> getOrders(User user) {
+    public Order getOrders(User user) {
         return orderRepository.getByUser(user);
     }
 
     @Override
     public Order addOrder(OrderDto dto, User user) {
         Cart cart = cartRepository.getByUser(user);
-        Order order = new Order();
+        Order order = orderRepository.getByUser(user);
         List<Item> items = new ArrayList<>(cart.getItems());
         for (Item item : items) {
             cart.removeItem(item);
             order.addItem(item);
         }
-        user.addOrder(order);
         order.setDescription(dto.getDescription());
         order.setUsername(dto.getUsername());
         order.setEmail(dto.getEmail());

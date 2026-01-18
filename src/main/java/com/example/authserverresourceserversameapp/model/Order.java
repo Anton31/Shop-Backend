@@ -17,7 +17,7 @@ public class Order {
     private String email;
     private transient long totalPrice;
     private transient long totalQuantity;
-    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @OneToOne
     private User user;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "order")
     private List<Item> items = new ArrayList<>();

@@ -15,6 +15,12 @@ values (1, 1);
 insert into cart(id, user_id)
 values (2, 2);
 
+insert into orders (id, user_id)
+values ( 1,1 );
+insert into orders (id, user_id)
+values ( 2, 2 );
+
+
 insert into type (id, name)
 values (1, 'None');
 insert into type (id, name)
