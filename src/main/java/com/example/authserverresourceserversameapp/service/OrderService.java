@@ -6,8 +6,6 @@ import com.example.authserverresourceserversameapp.model.Cart;
 import com.example.authserverresourceserversameapp.model.Order;
 import com.example.authserverresourceserversameapp.model.User;
 
-import java.util.List;
-
 public interface OrderService {
     Cart addItem(ItemDto dto, User user);
 
@@ -21,5 +19,5 @@ public interface OrderService {
 
     long deleteItem(long itemId);
 
-    long deleteOrder(long orderId);
+//    long deleteOrder(long orderId);
 }

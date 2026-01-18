@@ -112,14 +112,14 @@ public class OrderServiceImpl implements OrderService {
         return itemId;
     }
 
-    /**
-     * @param orderId id of order to delete
-     * @return id of deleted order
-     */
-    @Override
-    public long deleteOrder(long orderId) {
-        Order order = orderRepository.findById(orderId).get();
-        orderRepository.delete(order);
-        return orderId;
-    }
+//    /**
+//     * @param orderId id of order to delete
+//     * @return id of deleted order
+//     */
+//    @Override
+//    public long deleteOrder(long orderId) {
+//        Order order = orderRepository.findById(orderId).get();
+//        orderRepository.delete(order);
+//        return orderId;
+//    }
 }
