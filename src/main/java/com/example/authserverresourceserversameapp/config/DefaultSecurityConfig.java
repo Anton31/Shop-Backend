@@ -20,7 +20,6 @@ import org.springframework.security.oauth2.server.authorization.client.Registere
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClientRepository;
 import org.springframework.security.oauth2.server.authorization.settings.ClientSettings;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -49,18 +48,15 @@ public class DefaultSecurityConfig {
         http.headers(headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin));
         http.authorizeHttpRequests(authorizeRequests ->
                         authorizeRequests
-                                .requestMatchers(AntPathRequestMatcher.antMatcher("/h2-console/**"),
-                                        AntPathRequestMatcher.antMatcher("/user/**"),
-                                        AntPathRequestMatcher.antMatcher("/images/**"),
-                                        AntPathRequestMatcher.antMatcher(HttpMethod.GET, "/products/**"))
-                                .permitAll()
-                                .requestMatchers(AntPathRequestMatcher.antMatcher(HttpMethod.POST, "/products/**"))
+                                .requestMatchers("/h2-console/**", "/user/**", "/images/**").permitAll()
+                                .requestMatchers(HttpMethod.GET, "/products/**").permitAll()
+                                .requestMatchers(HttpMethod.POST, "/products/**")
                                 .hasRole("admin")
-                                .requestMatchers(AntPathRequestMatcher.antMatcher(HttpMethod.PUT, "/products/**"))
+                                .requestMatchers(HttpMethod.PUT, "/products/**")
                                 .hasRole("admin")
-                                .requestMatchers(AntPathRequestMatcher.antMatcher(HttpMethod.DELETE, "/products/**"))
+                                .requestMatchers(HttpMethod.DELETE, "/products/**")
                                 .hasRole("admin")
-                                .requestMatchers(AntPathRequestMatcher.antMatcher("/cart/**"))
+                                .requestMatchers("/cart/**")
                                 .hasAnyRole("user", "admin"))
                 .formLogin(withDefaults());
         http.cors(withDefaults());

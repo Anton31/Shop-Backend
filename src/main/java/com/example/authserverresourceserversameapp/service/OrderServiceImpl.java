@@ -93,8 +93,6 @@ public class OrderServiceImpl implements OrderService {
             order.addItem(item);
         }
         order.setName(dto.getName());
-        order.setUsername(dto.getUsername());
-        order.setEmail(dto.getEmail());
         orderRepository.save(order);
         return orderRepository.getAllByUser(user);
     }
