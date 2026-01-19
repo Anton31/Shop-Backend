@@ -92,6 +92,7 @@ public class OrderServiceImpl implements OrderService {
             cart.removeItem(item);
             order.addItem(item);
         }
+        order.setName(dto.getName());
         order.setUsername(dto.getUsername());
         order.setEmail(dto.getEmail());
         orderRepository.save(order);

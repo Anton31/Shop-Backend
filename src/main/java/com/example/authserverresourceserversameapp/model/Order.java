@@ -13,6 +13,7 @@ public class Order {
     @SequenceGenerator(name = "orderGen", sequenceName = "orderSeq", initialValue = 20)
     @GeneratedValue(generator = "orderGen")
     private Long id;
+    private String name;
     private String username;
     private String email;
     private transient long totalPrice;
@@ -31,6 +32,14 @@ public class Order {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getUsername() {
