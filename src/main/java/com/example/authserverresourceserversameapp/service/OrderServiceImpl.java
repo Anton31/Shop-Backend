@@ -41,6 +41,10 @@ public class OrderServiceImpl implements OrderService {
     public Cart addItem(ItemDto dto, User user) {
         Product product = productRepository.findById(dto.getProductId()).get();
         Cart cart = cartRepository.getByUser(user);
+        if (cart == null) {
+            cart = new Cart();
+            cart.setUser(user);
+        }
         Item item = new Item();
         cart.addItem(item);
         product.addItem(item);

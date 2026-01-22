@@ -75,14 +75,6 @@ public class User {
         this.role = role;
     }
 
-    public List<Order> getOrders() {
-        return orders;
-    }
-
-    public void setOrders(List<Order> orders) {
-        this.orders = orders;
-    }
-
     public void addOrder(Order order) {
         this.orders.add(order);
         order.setUser(this);
@@ -91,7 +83,6 @@ public class User {
     @Override
     public final boolean equals(Object o) {
         if (!(o instanceof User user)) return false;
-
         return getUsername().equals(user.getUsername()) && getEmail().equals(user.getEmail());
     }
 

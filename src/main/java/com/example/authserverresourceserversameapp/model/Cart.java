@@ -15,7 +15,6 @@ public class Cart {
     private transient List<Long> cartProductsIds = new ArrayList<>();
     private transient long totalPrice;
     private transient long totalQuantity;
-
     @OneToOne
     private User user;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "cart")

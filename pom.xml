@@ -5,14 +5,14 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.4.5</version>
+        <version>4.0.1</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.example</groupId>
-    <artifactId>SpringAuthServer</artifactId>
+    <artifactId>springauthserver</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>AuthServerResourceServerSameApp</name>
-    <description>AuthServerResourceServerSameApp</description>
+    <name>SpringAuthServer</name>
+    <description>SpringAuthServer</description>
     <dependencies>
         <dependency>
             <groupId>commons-io</groupId>
@@ -40,10 +40,8 @@
             <artifactId>spring-boot-starter-data-jpa</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.h2database</groupId>
-            <artifactId>h2</artifactId>
-            <version>2.3.232</version>
-            <scope>runtime</scope>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-h2console</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
