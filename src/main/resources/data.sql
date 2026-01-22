@@ -10,6 +10,9 @@ insert into users (id, username, email, password, enabled, role_id)
 values (2, 'Igor', '123@456',
         '$2a$12$Wdbe4OEBhR/c2Hgbte184uarjDdY56Kb0Hif1d21vzA36XYkGo3rG', true, 2);
 
+
+
+
 insert into type (id, name)
 values (1, 'None');
 insert into type (id, name)
