@@ -1,10 +1,10 @@
 package com.example.authserverresourceserversameapp.model;
 
+import org.jspecify.annotations.NullMarked;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.util.HashSet;
 import java.util.Set;
 
 
@@ -16,11 +16,10 @@ public class AppUser implements UserDetails {
     }
 
     @Override
+    @NullMarked
     public Set<? extends GrantedAuthority> getAuthorities() {
-        Set<SimpleGrantedAuthority> authorities = new HashSet<>();
         SimpleGrantedAuthority authority = new SimpleGrantedAuthority(user.getRole().getName());
-        authorities.add(authority);
-        return authorities;
+        return Set.of(authority);
     }
 
     @Override
@@ -29,6 +28,7 @@ public class AppUser implements UserDetails {
     }
 
     @Override
+    @NullMarked
     public String getUsername() {
         return user.getUsername();
     }

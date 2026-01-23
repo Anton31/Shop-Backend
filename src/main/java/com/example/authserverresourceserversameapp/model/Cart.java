@@ -12,7 +12,7 @@ public class Cart {
     @SequenceGenerator(name = "cartGen", sequenceName = "cartSeq", initialValue = 20)
     @GeneratedValue(generator = "cartGen")
     private Long id;
-    private transient List<Long> cartProductsIds = new ArrayList<>();
+    private final transient List<Long> cartProductsIds = new ArrayList<>();
     private transient long totalPrice;
     private transient long totalQuantity;
     @OneToOne
@@ -21,6 +21,10 @@ public class Cart {
     private List<Item> items = new ArrayList<>();
 
     public Cart() {
+    }
+
+    public Cart(User user) {
+        this.user = user;
     }
 
     public Long getId() {
@@ -33,10 +37,6 @@ public class Cart {
 
     public User getUser() {
         return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
     }
 
     public List<Item> getItems() {

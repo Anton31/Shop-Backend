@@ -3,7 +3,6 @@ package com.example.authserverresourceserversameapp.service;
 import com.example.authserverresourceserversameapp.dto.UserDto;
 import com.example.authserverresourceserversameapp.exception.PasswordsDontMatchException;
 import com.example.authserverresourceserversameapp.exception.UserExistsException;
-import com.example.authserverresourceserversameapp.exception.WrongPasswordException;
 import com.example.authserverresourceserversameapp.model.Cart;
 import com.example.authserverresourceserversameapp.model.Role;
 import com.example.authserverresourceserversameapp.model.User;
@@ -69,8 +68,9 @@ public class UserServiceImpl implements UserService {
         if (userRepository.getByEmail(dto.getEmail()) != null) {
             throw new UserExistsException("User with email: \"" + dto.getEmail() + "\" already exists!");
         }
-
         User registered = userRepository.save(user);
+        Cart cart = new Cart(registered);
+        cartRepository.save(cart);
         MimeMessage message = constructVerificationTokenEmail(registered);
         mailSender.send(message);
         return registered;

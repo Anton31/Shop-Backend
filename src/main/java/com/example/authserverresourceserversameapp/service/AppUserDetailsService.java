@@ -3,6 +3,7 @@ package com.example.authserverresourceserversameapp.service;
 import com.example.authserverresourceserversameapp.model.AppUser;
 import com.example.authserverresourceserversameapp.model.User;
 import com.example.authserverresourceserversameapp.repository.UserRepository;
+import org.jspecify.annotations.NullMarked;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -17,6 +18,7 @@ public class AppUserDetailsService implements UserDetailsService {
     }
 
     @Override
+    @NullMarked
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User user;
         if (username.contains("@")) {

@@ -3,17 +3,15 @@ package com.example.authserverresourceserversameapp.config;
 import com.example.authserverresourceserversameapp.service.AppUserDetailsService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpMethod;
-import org.springframework.http.MediaType;
-import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
-import org.springframework.security.config.annotation.web.configurers.oauth2.server.authorization.OAuth2AuthorizationServerConfigurer;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.core.AuthorizationGrantType;
@@ -24,8 +22,6 @@ import org.springframework.security.oauth2.server.authorization.client.Registere
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClientRepository;
 import org.springframework.security.oauth2.server.authorization.settings.ClientSettings;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
-import org.springframework.security.web.util.matcher.MediaTypeRequestMatcher;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -46,57 +42,38 @@ public class SecurityConfig {
         this.userDetailsService = userDetailsService;
         this.converter = converter;
     }
-    @Bean
-    @Order(1)
-    public SecurityFilterChain authorizationServerSecurityFilterChain(HttpSecurity http)
-            throws Exception {
-        OAuth2AuthorizationServerConfigurer authorizationServerConfigurer =
-                new OAuth2AuthorizationServerConfigurer();
 
-        http
-                .securityMatcher(authorizationServerConfigurer.getEndpointsMatcher())
-                .with(authorizationServerConfigurer, (authorizationServer) ->
-                        authorizationServer
-                                .oidc(Customizer.withDefaults())	// Enable OpenID Connect 1.0
-                )
-                .authorizeHttpRequests((authorize) ->
-                        authorize
-                                .anyRequest().authenticated()
-                )
-                // Redirect to the login page when not authenticated from the
-                // authorization endpoint
-                .exceptionHandling((exceptions) -> exceptions
-                        .defaultAuthenticationEntryPointFor(
-                                new LoginUrlAuthenticationEntryPoint("/login"),
-                                new MediaTypeRequestMatcher(MediaType.TEXT_HTML)
-                        )
-                );
-
-        return http.build();
-    }
     @Bean
-    public SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) {
+    public SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(AbstractHttpConfigurer::disable);
         http.headers(headers ->
                 headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin));
         http.authorizeHttpRequests(authorizeRequests ->
-                        authorizeRequests
-                                .requestMatchers("/h2-console/**", "/user/**", "/images/**").permitAll()
-                                .requestMatchers(HttpMethod.GET, "/products/**").permitAll()
-                                .requestMatchers(HttpMethod.POST, "/products/**")
-                                .hasRole("admin")
-                                .requestMatchers(HttpMethod.PUT, "/products/**")
-                                .hasRole("admin")
-                                .requestMatchers(HttpMethod.DELETE, "/products/**")
-                                .hasRole("admin")
-                                .requestMatchers("/cart/**")
-                                .hasAnyRole("user", "admin"))
-                .formLogin(withDefaults());
-
+                authorizeRequests
+                        .requestMatchers("/h2-console/**",
+                                "/user/**",
+                                "/oauth2/authorize/**",
+                                "/oauth2/token/**",
+                                "/error/**",
+                                "/images/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/products/**").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/products/**")
+                        .hasAuthority("admin")
+                        .requestMatchers(HttpMethod.PUT, "/products/**")
+                        .hasAuthority("admin")
+                        .requestMatchers(HttpMethod.DELETE, "/products/**")
+                        .hasAuthority("admin")
+                        .requestMatchers("/cart/**")
+                        .hasAnyAuthority("user", "admin"));
+        http.formLogin(Customizer.withDefaults());
         http.cors(withDefaults());
+        http.oauth2AuthorizationServer((authorizationServer) ->
+                authorizationServer
+                        .oidc(withDefaults())    // Enable OpenID Connect 1.0
+        );
         http.oauth2ResourceServer((resourceServer) ->
-                resourceServer.jwt(jwtConfigurer -> jwtConfigurer.jwtAuthenticationConverter(converter)));
-        http.authenticationProvider(authenticationProvider());
+                resourceServer.jwt(withDefaults()));
+        http.authenticationManager(authenticationManager());
         return http.build();
     }
 
@@ -106,14 +83,10 @@ public class SecurityConfig {
                 .clientId("app-client")
                 .clientAuthenticationMethod(ClientAuthenticationMethod.NONE)
                 .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
-                .redirectUri("http://localhost:4200")
-                .postLogoutRedirectUri("http://localhost:4200")
                 .scope(OidcScopes.OPENID)
-                .clientSettings(ClientSettings.builder()
-                        .requireAuthorizationConsent(true)
-                        .requireProofKey(true)
-                        .build()
-                )
+                .redirectUri("http://localhost:4200")
+                        .clientSettings(ClientSettings.builder().requireProofKey(true)
+                                .requireAuthorizationConsent(true).build())
                 .build();
         return new InMemoryRegisteredClientRepository(client);
     }
@@ -131,10 +104,10 @@ public class SecurityConfig {
     }
 
     @Bean
-    AuthenticationProvider authenticationProvider() {
-        DaoAuthenticationProvider provider = new DaoAuthenticationProvider(userDetailsService);
-        provider.setPasswordEncoder(passwordEncoder());
-        return provider;
+    public AuthenticationManager authenticationManager() throws Exception {
+        DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider(userDetailsService);
+        authProvider.setPasswordEncoder(passwordEncoder());
+        return new ProviderManager(authProvider);
     }
 
     @Bean

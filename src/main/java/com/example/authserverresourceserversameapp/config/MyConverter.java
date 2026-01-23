@@ -1,5 +1,6 @@
 package com.example.authserverresourceserversameapp.config;
 
+import jakarta.validation.constraints.NotNull;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
@@ -23,7 +24,7 @@ public class MyConverter implements Converter<Jwt, AbstractAuthenticationToken> 
     }
 
     @Override
-    public AbstractAuthenticationToken convert(Jwt jwt) {
+    public AbstractAuthenticationToken convert(@NotNull Jwt jwt) {
         UserDetails userDetails = userDetailsService.loadUserByUsername(jwt.getSubject());
         List<GrantedAuthority> authorities = new ArrayList<>(userDetails.getAuthorities());
         System.out.println(authorities);
