@@ -51,28 +51,30 @@ public class SecurityConfig {
         http.authorizeHttpRequests(authorizeRequests ->
                 authorizeRequests
                         .requestMatchers("/h2-console/**",
-                                "/user/**",
+                                "/user",
                                 "/oauth2/authorize/**",
                                 "/oauth2/token/**",
                                 "/error/**",
                                 "/images/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/products/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/products/**")
-                        .hasAuthority("admin")
+                        .hasRole("admin")
                         .requestMatchers(HttpMethod.PUT, "/products/**")
-                        .hasAuthority("admin")
+                        .hasRole("admin")
                         .requestMatchers(HttpMethod.DELETE, "/products/**")
-                        .hasAuthority("admin")
+                        .hasRole("admin")
                         .requestMatchers("/cart/**")
-                        .hasAnyAuthority("user", "admin"));
+                        .hasAnyRole("user", "admin"));
         http.formLogin(Customizer.withDefaults());
         http.cors(withDefaults());
         http.oauth2AuthorizationServer((authorizationServer) ->
                 authorizationServer
                         .oidc(withDefaults())    // Enable OpenID Connect 1.0
         );
-        http.oauth2ResourceServer((resourceServer) ->
-                resourceServer.jwt(withDefaults()));
+
+        http.oauth2ResourceServer((oauth2) -> oauth2
+                .jwt(jwt -> jwt.jwtAuthenticationConverter(converter))
+        );
         http.authenticationManager(authenticationManager());
         return http.build();
     }
@@ -85,8 +87,8 @@ public class SecurityConfig {
                 .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
                 .scope(OidcScopes.OPENID)
                 .redirectUri("http://localhost:4200")
-                        .clientSettings(ClientSettings.builder().requireProofKey(true)
-                                .requireAuthorizationConsent(true).build())
+                .clientSettings(ClientSettings.builder().requireProofKey(true)
+                        .requireAuthorizationConsent(true).build())
                 .build();
         return new InMemoryRegisteredClientRepository(client);
     }
