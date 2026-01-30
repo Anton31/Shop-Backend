@@ -26,7 +26,7 @@ public class OrderController {
     public Cart getCart(Principal principal) {
         User user;
         if (principal == null) {
-            user = userService.findByUsername("Igor");
+            user = userService.findByUsername("Anton");
         } else {
             user = userService.findByUsername(principal.getName());
         }
@@ -37,7 +37,7 @@ public class OrderController {
     public Cart addItem(@PathVariable long id, Principal principal) {
         User user;
         if (principal == null) {
-            user = userService.findByUsername("Igor");
+            user = userService.findByUsername("Anton");
         } else {
             user = userService.findByUsername(principal.getName());
         }
