@@ -68,12 +68,7 @@ public class SecurityConfig {
                 .formLogin(Customizer.withDefaults()).csrf(AbstractHttpConfigurer::disable)
                 .cors(Customizer.withDefaults())
                 .oauth2AuthorizationServer(server ->
-                        server.oidc(withDefaults())).exceptionHandling((exceptions) -> exceptions
-                        .defaultAuthenticationEntryPointFor(
-                                new LoginUrlAuthenticationEntryPoint("/login"),
-                                new MediaTypeRequestMatcher(MediaType.TEXT_HTML)
-                        )
-                );
+                        server.oidc(withDefaults()));
         http.oauth2ResourceServer((oauth2) -> oauth2
                 .jwt(jwt -> jwt.jwtAuthenticationConverter(converter))
         );
