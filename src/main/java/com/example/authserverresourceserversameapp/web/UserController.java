@@ -7,8 +7,6 @@ import com.example.authserverresourceserversameapp.model.User;
 import com.example.authserverresourceserversameapp.model.VerificationToken;
 import com.example.authserverresourceserversameapp.service.UserService;
 import jakarta.mail.MessagingException;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -49,16 +47,20 @@ public class UserController {
 
     @GetMapping
     @ResponseBody
-    public UserInfo getUserInfo(@AuthenticationPrincipal UserDetails userDetails) {
-        if (userDetails == null) {
-            return new UserInfo("none", "none");
+    public UserInfo getUserInfo(Principal principal) {
+        User user;
+        if (principal == null) {
+            user = userService.findByUsername("Anton");
         } else {
-            User user = userService.findByUsername(userDetails.getUsername());
-            System.out.println(user.getUsername());
-            System.out.println(user.getRole().getName());
-            return new UserInfo(user.getUsername(), user.getRole().getName());
+            System.out.println(principal.getName());
+            user = userService.findByUsername(principal.getName());
         }
+        System.out.println(principal == null);
+        System.out.println(user.getUsername());
+        System.out.println(user.getRole().getName());
+        return new UserInfo(user.getUsername(), user.getRole().getName());
     }
+
 
     @PutMapping
     @ResponseBody

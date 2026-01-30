@@ -45,32 +45,30 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
-        http.csrf(AbstractHttpConfigurer::disable);
-        http.headers(headers ->
-                headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin));
+
         http.authorizeHttpRequests(authorizeRequests ->
-                authorizeRequests
-                        .requestMatchers("/h2-console/**",
-                                "/user",
-                                "/oauth2/authorize/**",
-                                "/oauth2/token/**",
-                                "/error/**",
-                                "/images/**").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/products/**").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/products/**")
-                        .hasRole("admin")
-                        .requestMatchers(HttpMethod.PUT, "/products/**")
-                        .hasRole("admin")
-                        .requestMatchers(HttpMethod.DELETE, "/products/**")
-                        .hasRole("admin")
-                        .requestMatchers("/cart/**")
-                        .hasAnyRole("user", "admin"));
-        http.formLogin(Customizer.withDefaults());
-        http.cors(withDefaults());
-        http.oauth2AuthorizationServer((authorizationServer) ->
-                authorizationServer
-                        .oidc(withDefaults())    // Enable OpenID Connect 1.0
-        );
+                        authorizeRequests
+                                .requestMatchers("/h2-console/**",
+                                        "/user/**",
+                                        "/cart/**",
+                                        "/oauth2/**",
+                                        "/images/**").permitAll()
+                                .requestMatchers(HttpMethod.GET, "/products/**").permitAll()
+                                .requestMatchers(HttpMethod.POST, "/products/**")
+                                .hasRole("admin")
+                                .requestMatchers(HttpMethod.PUT, "/products/**")
+                                .hasRole("admin")
+                                .requestMatchers(HttpMethod.DELETE, "/products/**")
+                                .hasRole("admin"))
+                .formLogin(Customizer.withDefaults()).csrf(AbstractHttpConfigurer::disable)
+                .headers(headers ->
+                        headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::disable))
+                .cors(withDefaults())
+
+                .oauth2AuthorizationServer(server ->
+
+                        server.oidc(withDefaults()));
+
 
         http.oauth2ResourceServer((oauth2) -> oauth2
                 .jwt(jwt -> jwt.jwtAuthenticationConverter(converter))
@@ -99,6 +97,7 @@ public class SecurityConfig {
         configuration.setAllowedOrigins(List.of("http://localhost:4200"));
         configuration.setAllowedMethods(List.of("*"));
         configuration.setAllowedHeaders(List.of("*"));
+        configuration.setExposedHeaders(List.of("*"));
         configuration.setAllowCredentials(true);
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);

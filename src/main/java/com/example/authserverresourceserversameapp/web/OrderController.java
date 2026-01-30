@@ -1,6 +1,5 @@
 package com.example.authserverresourceserversameapp.web;
 
-import com.example.authserverresourceserversameapp.dto.ItemDto;
 import com.example.authserverresourceserversameapp.dto.OrderDto;
 import com.example.authserverresourceserversameapp.model.Cart;
 import com.example.authserverresourceserversameapp.model.Order;
@@ -25,25 +24,32 @@ public class OrderController {
 
     @GetMapping
     public Cart getCart(Principal principal) {
+        User user;
         if (principal == null) {
-            return null;
+            user = userService.findByUsername("Anton");
+        } else {
+            user = userService.findByUsername(principal.getName());
         }
-        User user = userService.findByUsername(principal.getName());
         return orderService.getCartByUser(user);
     }
 
-    @PostMapping
-    public Cart addItem(@RequestBody ItemDto dto, Principal principal) {
-        User user = userService.findByUsername(principal.getName());
-        return orderService.addItem(dto, user);
+    @GetMapping("/add/{id}")
+    public Cart addItem(@PathVariable long id, Principal principal) {
+        User user;
+        if (principal == null) {
+            user = userService.findByUsername("Anton");
+        } else {
+            user = userService.findByUsername(principal.getName());
+        }
+        return orderService.addItem(id, user);
     }
 
-    @PutMapping
-    public Cart editItem(@RequestBody ItemDto dto) {
-        return orderService.editItem(dto);
+    @GetMapping("/edit/{itemId}/{plus}")
+    public Cart editItem(@PathVariable long itemId, @PathVariable long plus) {
+        return orderService.editItem(itemId, plus);
     }
 
-    @DeleteMapping("/{itemId}")
+    @GetMapping("/delete/{itemId}")
     public long deleteItem(@PathVariable long itemId) {
         return orderService.deleteItem(itemId);
     }

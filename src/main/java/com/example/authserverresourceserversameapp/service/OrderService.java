@@ -9,9 +9,9 @@ import com.example.authserverresourceserversameapp.model.User;
 import java.util.List;
 
 public interface OrderService {
-    Cart addItem(ItemDto dto, User user);
+    Cart addItem(long id, User user);
 
-    Cart editItem(ItemDto dto);
+    Cart editItem(long itemId, long plus);
 
     Cart getCartByUser(User user);
 
