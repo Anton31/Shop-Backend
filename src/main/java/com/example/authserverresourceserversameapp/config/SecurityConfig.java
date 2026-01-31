@@ -3,6 +3,8 @@ package com.example.authserverresourceserversameapp.config;
 import com.example.authserverresourceserversameapp.service.AppUserDetailsService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.Ordered;
+import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -48,6 +50,34 @@ public class SecurityConfig {
     }
 
     @Bean
+    @Order(Ordered.HIGHEST_PRECEDENCE)
+    public SecurityFilterChain authorizationServerSecurityFilterChain(HttpSecurity http)
+            throws Exception {
+
+        http
+                .oauth2AuthorizationServer((authorizationServer) -> {
+                    http.securityMatcher(authorizationServer.getEndpointsMatcher());
+                    authorizationServer
+                            .oidc(withDefaults());    // Enable OpenID Connect 1.0
+                })
+                .authorizeHttpRequests((authorize) ->
+                        authorize
+                                .anyRequest().authenticated()
+                )
+                // Redirect to the login page when not authenticated from the
+                // authorization endpoint
+                .exceptionHandling((exceptions) -> exceptions
+                        .defaultAuthenticationEntryPointFor(
+                                new LoginUrlAuthenticationEntryPoint("/login"),
+                                new MediaTypeRequestMatcher(MediaType.TEXT_HTML)
+                        )
+                );
+        http.cors(Customizer.withDefaults());
+        http.csrf(AbstractHttpConfigurer::disable);
+        return http.build();
+    }
+
+    @Bean
     public SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
         http.headers(headers ->
                 headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin));
@@ -55,8 +85,8 @@ public class SecurityConfig {
                         authorizeRequests
                                 .requestMatchers("/h2-console/**",
                                         "/user/**",
-                                        "/cart/**",
                                         "/oauth2/**",
+                                        "/login/**",
                                         "/images/**").permitAll()
                                 .requestMatchers(HttpMethod.GET, "/products/**").permitAll()
                                 .requestMatchers(HttpMethod.POST, "/products/**")
@@ -64,14 +94,16 @@ public class SecurityConfig {
                                 .requestMatchers(HttpMethod.PUT, "/products/**")
                                 .hasRole("admin")
                                 .requestMatchers(HttpMethod.DELETE, "/products/**")
-                                .hasRole("admin"))
-                .formLogin(Customizer.withDefaults()).csrf(AbstractHttpConfigurer::disable)
-                .cors(Customizer.withDefaults())
-                .oauth2AuthorizationServer(server ->
-                        server.oidc(withDefaults()));
-        http.oauth2ResourceServer((oauth2) -> oauth2
-                .jwt(jwt -> jwt.jwtAuthenticationConverter(converter))
-        );
+                                .hasRole("admin")
+                                .requestMatchers("/cart/**").permitAll()
+                )
+                .formLogin(Customizer.withDefaults())
+                .csrf(AbstractHttpConfigurer::disable)
+                .cors(Customizer.withDefaults());
+
+//        http.oauth2ResourceServer((oauth2) -> oauth2
+//                .jwt(jwt -> jwt.jwtAuthenticationConverter(converter))
+//        );
         http.authenticationManager(authenticationManager());
 
         return http.build();

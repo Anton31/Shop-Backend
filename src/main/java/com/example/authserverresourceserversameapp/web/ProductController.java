@@ -56,7 +56,7 @@ public class ProductController {
         return productService.getProducts(typeId, brandId, sort, dir);
     }
 
-    @GetMapping("/product/{id}")
+    @GetMapping("/productPhotos/{id}")
     public Product getProduct(@PathVariable long id) {
         return productService.getProduct(id);
     }
@@ -71,7 +71,7 @@ public class ProductController {
         return productService.addProduct(dto);
     }
 
-    @DeleteMapping("/product/{id}")
+    @GetMapping("/product/{id}")
     public long deleteProduct(@PathVariable long id) throws IOException {
         return productService.deleteProduct(id);
     }
