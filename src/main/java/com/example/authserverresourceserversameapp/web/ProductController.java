@@ -71,7 +71,7 @@ public class ProductController {
         return productService.addProduct(dto);
     }
 
-    @GetMapping("/product/{id}")
+    @DeleteMapping("/product/{id}")
     public long deleteProduct(@PathVariable long id) throws IOException {
         return productService.deleteProduct(id);
     }

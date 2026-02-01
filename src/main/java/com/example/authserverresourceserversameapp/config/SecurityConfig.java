@@ -15,7 +15,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
-import org.springframework.security.core.userdetails.UserDetailsService;
+
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.core.AuthorizationGrantType;
@@ -40,7 +40,7 @@ import static org.springframework.security.config.Customizer.withDefaults;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
-    private final UserDetailsService userDetailsService;
+    private final AppUserDetailsService userDetailsService;
     private final MyConverter converter;
 
     public SecurityConfig(AppUserDetailsService userDetailsService,
@@ -83,9 +83,13 @@ public class SecurityConfig {
                 headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin));
         http.authorizeHttpRequests(authorizeRequests ->
                         authorizeRequests
-                                .requestMatchers("/h2-console/**",
+                                .requestMatchers(
+                                        "/h2-console/**",
                                         "/user/**",
-                                        "/oauth2/**",
+                                        "/oauth2/token",
+                                        "/oauth2/authorize",
+                                        "/connect/logout/**",
+                                        "/userinfo/**",
                                         "/login/**",
                                         "/images/**").permitAll()
                                 .requestMatchers(HttpMethod.GET, "/products/**").permitAll()
@@ -101,9 +105,8 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(Customizer.withDefaults());
 
-//        http.oauth2ResourceServer((oauth2) -> oauth2
-//                .jwt(jwt -> jwt.jwtAuthenticationConverter(converter))
-//        );
+        http.oauth2ResourceServer((oauth2) -> oauth2
+                .jwt(Customizer.withDefaults()));
         http.authenticationManager(authenticationManager());
 
         return http.build();
@@ -117,6 +120,7 @@ public class SecurityConfig {
                 .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
                 .scope(OidcScopes.OPENID)
                 .redirectUri("http://localhost:4200")
+                .postLogoutRedirectUri("http://localhost:4200")
                 .clientSettings(ClientSettings.builder().requireProofKey(true)
                         .requireAuthorizationConsent(true).build())
                 .build();
@@ -127,9 +131,8 @@ public class SecurityConfig {
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowedOrigins(List.of("http://localhost:4200"));
-        configuration.setAllowedMethods(List.of("*"));
+        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("*"));
-        configuration.setExposedHeaders(List.of("*"));
         configuration.setAllowCredentials(true);
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);

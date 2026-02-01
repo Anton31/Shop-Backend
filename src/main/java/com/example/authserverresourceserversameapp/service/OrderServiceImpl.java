@@ -1,5 +1,6 @@
 package com.example.authserverresourceserversameapp.service;
 
+import com.example.authserverresourceserversameapp.dto.ItemDto;
 import com.example.authserverresourceserversameapp.dto.OrderDto;
 import com.example.authserverresourceserversameapp.model.*;
 import com.example.authserverresourceserversameapp.repository.CartRepository;
@@ -29,15 +30,10 @@ public class OrderServiceImpl implements OrderService {
         this.orderRepository = orderRepository;
     }
 
-    /**
-     * adds new item to cart
-     *
-     * @param user current user
-     * @return cart with added new item
-     */
+
     @Override
-    public Cart addItem(long id, User user) {
-        Product product = productRepository.findById(id).get();
+    public Cart addItem(ItemDto dto, User user) {
+        Product product = productRepository.findById(dto.getProductId()).get();
         Cart cart = cartRepository.getByUser(user);
         Item item = new Item();
         cart.addItem(item);
@@ -52,13 +48,13 @@ public class OrderServiceImpl implements OrderService {
      * @return cart with edited new item
      */
     @Override
-    public Cart editItem(long itemId, long plus) {
-        Item item = itemRepository.findById(itemId).get();
+    public Cart editItem(ItemDto dto) {
+        Item item = itemRepository.findById(dto.getItemId()).get();
         Cart cart = item.getCart();
-        if (item.getQuantity() == 1 && plus == -1) {
+        if (item.getQuantity() == 1 && dto.getQuantity() == -1) {
             item.setQuantity(1);
         } else {
-            item.setQuantity(item.getQuantity() + plus);
+            item.setQuantity(item.getQuantity() + dto.getQuantity());
         }
         return cartRepository.save(cart);
     }

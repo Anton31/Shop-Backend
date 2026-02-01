@@ -50,7 +50,7 @@ public class UserController {
     public UserInfo getUserInfo(Principal principal) {
         User user;
         if (principal == null) {
-            user = userService.findByUsername("Igor");
+            return new UserInfo("none", "none");
         } else {
             user = userService.findByUsername(principal.getName());
         }
