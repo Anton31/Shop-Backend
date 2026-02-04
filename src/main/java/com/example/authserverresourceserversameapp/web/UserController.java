@@ -51,7 +51,7 @@ public class UserController {
         System.out.println(principal);
         User user;
         if (principal == null) {
-            user = userService.findByUsername("Anton");
+            user = userService.findByUsername("Igor");
         } else {
             user = userService.findByUsername(principal.getName());
         }

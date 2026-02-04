@@ -27,7 +27,7 @@ public class OrderController {
     public Cart getCart(Principal principal) {
         User user;
         if (principal == null) {
-            user = userService.findByUsername("Anton");
+            user = userService.findByUsername("Igor");
         } else {
             user = userService.findByUsername(principal.getName());
         }
@@ -39,7 +39,7 @@ public class OrderController {
     public Cart addItem(@RequestBody ItemDto dto, Principal principal) {
         User user;
         if (principal == null) {
-            user = userService.findByUsername("Anton");
+            user = userService.findByUsername("Igor");
         } else {
             user = userService.findByUsername(principal.getName());
         }
@@ -61,7 +61,7 @@ public class OrderController {
     public List<Order> getOrder(Principal principal) {
         User user;
         if (principal == null) {
-            user = userService.findByUsername("Anton");
+            user = userService.findByUsername("Igor");
         } else {
             user = userService.findByUsername(principal.getName());
         }
