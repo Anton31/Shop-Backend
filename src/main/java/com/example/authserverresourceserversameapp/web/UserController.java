@@ -48,9 +48,10 @@ public class UserController {
     @GetMapping
     @ResponseBody
     public UserInfo getUserInfo(Principal principal) {
+        System.out.println(principal);
         User user;
         if (principal == null) {
-            return new UserInfo("none", "none");
+            user = userService.findByUsername("Anton");
         } else {
             user = userService.findByUsername(principal.getName());
         }

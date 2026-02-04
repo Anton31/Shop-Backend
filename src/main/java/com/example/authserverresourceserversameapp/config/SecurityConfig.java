@@ -84,14 +84,10 @@ public class SecurityConfig {
         http.authorizeHttpRequests(authorizeRequests ->
                         authorizeRequests
                                 .requestMatchers(
-                                        "/h2-console/**",
-                                        "/user/**",
-                                        "/oauth2/token",
-                                        "/oauth2/authorize",
-                                        "/connect/logout/**",
-                                        "/userinfo/**",
-                                        "/login/**",
-                                        "/images/**").permitAll()
+                                        "/h2-console/**", "/user/**",
+                                        "/oauth2/token", "/oauth2/authorize",
+                                        "/connect/logout/**", "/userinfo/**",
+                                        "/login/**", "/images/**").permitAll()
                                 .requestMatchers(HttpMethod.GET, "/products/**").permitAll()
                                 .requestMatchers(HttpMethod.POST, "/products/**")
                                 .hasRole("admin")

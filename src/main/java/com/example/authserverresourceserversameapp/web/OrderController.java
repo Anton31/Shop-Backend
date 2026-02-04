@@ -7,8 +7,6 @@ import com.example.authserverresourceserversameapp.model.Order;
 import com.example.authserverresourceserversameapp.model.User;
 import com.example.authserverresourceserversameapp.service.OrderService;
 import com.example.authserverresourceserversameapp.service.UserService;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
@@ -29,7 +27,7 @@ public class OrderController {
     public Cart getCart(Principal principal) {
         User user;
         if (principal == null) {
-            user = userService.findByUsername("Igor");
+            user = userService.findByUsername("Anton");
         } else {
             user = userService.findByUsername(principal.getName());
         }
@@ -41,7 +39,7 @@ public class OrderController {
     public Cart addItem(@RequestBody ItemDto dto, Principal principal) {
         User user;
         if (principal == null) {
-            user = userService.findByUsername("Igor");
+            user = userService.findByUsername("Anton");
         } else {
             user = userService.findByUsername(principal.getName());
         }
@@ -61,7 +59,12 @@ public class OrderController {
 
     @GetMapping("/order")
     public List<Order> getOrder(Principal principal) {
-        User user = userService.findByUsername("Igor");
+        User user;
+        if (principal == null) {
+            user = userService.findByUsername("Anton");
+        } else {
+            user = userService.findByUsername(principal.getName());
+        }
         return orderService.getOrders(user);
     }
 
