@@ -56,7 +56,7 @@ public class ProductController {
         return productService.getProducts(typeId, brandId, sort, dir);
     }
 
-    @GetMapping("/productPhotos/{id}")
+    @GetMapping("/product/{id}")
     public Product getProduct(@PathVariable long id) {
         return productService.getProduct(id);
     }
