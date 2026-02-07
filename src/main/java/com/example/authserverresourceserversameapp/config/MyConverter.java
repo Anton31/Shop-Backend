@@ -5,10 +5,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-
-
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 
@@ -29,11 +26,8 @@ public class MyConverter implements Converter<Jwt, AbstractAuthenticationToken> 
         UserDetails userDetails = userDetailsService.loadUserByUsername(jwt.getSubject());
         List<GrantedAuthority> authorities = new ArrayList<>(userDetails.getAuthorities());
         System.out.println(authorities);
-        List<GrantedAuthority> newAuthorities = new ArrayList<>();
-        for (GrantedAuthority authority : authorities) {
-            newAuthorities.add(new SimpleGrantedAuthority("ROLE_" + authority.getAuthority()));
-        }
-        System.out.println(newAuthorities);
-        return new JwtAuthenticationToken(jwt, authorities);
+        JwtAuthenticationToken token = new JwtAuthenticationToken(jwt, authorities);
+        System.out.println(token);
+        return token;
     }
 }

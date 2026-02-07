@@ -1,7 +1,7 @@
 package com.example.authserverresourceserversameapp.dto;
 
 public class SuccessResponse {
-    private String message;
+    private final String message;
 
     public SuccessResponse(String message) {
         this.message = message;
