@@ -23,16 +23,12 @@ public class ProductController {
         this.productService = productService;
     }
 
-    @GetMapping("/type")
-    public List<Type> getAllTypes(@RequestParam(required = false, defaultValue = "name") String sort,
-                                  @RequestParam(required = false, defaultValue = "ASC") String dir) {
-        return productService.getAllTypes(sort, dir);
-    }
-
-    @GetMapping("/brand")
-    public List<Brand> getAllBrands(@RequestParam(required = false, defaultValue = "name") String sort,
-                                    @RequestParam(required = false, defaultValue = "ASC") String dir) {
-        return productService.getAllBrands(sort, dir);
+    @GetMapping(value = "/product")
+    public List<Product> getProducts(@RequestParam(required = false) Long typeId,
+                                     @RequestParam(required = false) Long brandId,
+                                     @RequestParam(required = false, defaultValue = "name") String sort,
+                                     @RequestParam(required = false, defaultValue = "ASC") String dir) {
+        return productService.getProducts(typeId, brandId, sort, dir);
     }
 
     @GetMapping("/productType")
@@ -46,14 +42,6 @@ public class ProductController {
                                         @RequestParam(required = false, defaultValue = "id") String sort,
                                         @RequestParam(required = false, defaultValue = "ASC") String dir) {
         return productService.getProductBrands(typeId, sort, dir);
-    }
-
-    @GetMapping(value = "/product")
-    public List<Product> getProducts(@RequestParam(required = false) Long typeId,
-                                     @RequestParam(required = false) Long brandId,
-                                     @RequestParam(required = false, defaultValue = "name") String sort,
-                                     @RequestParam(required = false, defaultValue = "ASC") String dir) {
-        return productService.getProducts(typeId, brandId, sort, dir);
     }
 
     @GetMapping("/product/{id}")
@@ -92,6 +80,12 @@ public class ProductController {
         return productService.removePhoto(productId, photoId);
     }
 
+    @GetMapping("/type")
+    public List<Type> getAllTypes(@RequestParam(required = false, defaultValue = "name") String sort,
+                                  @RequestParam(required = false, defaultValue = "ASC") String dir) {
+        return productService.getAllTypes(sort, dir);
+    }
+
     @PostMapping("/type")
     public long addType(@Valid @RequestBody TypeDto dto) {
         return productService.addType(dto);
@@ -107,13 +101,19 @@ public class ProductController {
         return productService.deleteType(id);
     }
 
+    @GetMapping("/brand")
+    public List<Brand> getAllBrands(@RequestParam(required = false, defaultValue = "name") String sort,
+                                    @RequestParam(required = false, defaultValue = "ASC") String dir) {
+        return productService.getAllBrands(sort, dir);
+    }
+
     @PostMapping("/brand")
-    public long addBrand(BrandDto dto) {
+    public long addBrand(@Valid @RequestBody BrandDto dto) {
         return productService.addBrand(dto);
     }
 
     @PutMapping("/brand")
-    public long editBrand(BrandDto dto) {
+    public long editBrand(@Valid @RequestBody BrandDto dto) {
         return productService.addBrand(dto);
     }
 

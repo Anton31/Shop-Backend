@@ -37,7 +37,11 @@ public class OrderController {
     @PostMapping
     public Cart addItem(@RequestBody ItemDto dto, Principal principal) {
         User user;
-        user = userService.findByUsername(principal.getName());
+        if (principal == null) {
+            return null;
+        } else {
+            user = userService.findByUsername(principal.getName());
+        }
         return orderService.addItem(dto, user);
     }
 
@@ -59,7 +63,12 @@ public class OrderController {
 
     @PostMapping("/order")
     public List<Order> addOrder(@RequestBody OrderDto dto, Principal principal) {
-        User user = userService.findByUsername(principal.getName());
+        User user;
+        if (principal == null) {
+            return null;
+        } else {
+            user = userService.findByUsername(principal.getName());
+        }
         return orderService.addOrder(dto, user);
     }
 
