@@ -81,6 +81,10 @@ public class UserServiceImpl implements UserService {
         if (!dto.getPassword().equals(dto.getPasswordConfirmed())) {
             throw new PasswordsDontMatchException();
         }
+        Role role = roleRepository.findAllByName(dto.getRole());
+        if (!user.getRoles().contains(role)) {
+            role.addUser(user);
+        }
         user.setPassword(passwordEncoder.encode(dto.getPassword()));
         userRepository.save(user);
     }

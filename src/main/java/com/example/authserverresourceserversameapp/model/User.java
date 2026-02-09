@@ -10,15 +10,18 @@ import java.util.List;
 @Table(name = "users")
 public class User {
     @Id
-    @SequenceGenerator(name = "userGen", sequenceName = "userSeq", initialValue = 20)
+    @SequenceGenerator(name = "userGen", sequenceName = "userSeq", initialValue = 10)
     @GeneratedValue(generator = "userGen")
     private Long id;
     private String username;
     private String email;
     private String password;
     private boolean enabled;
-    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    private Role role;
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id")
+    )
+    private List<Role> roles = new ArrayList<>();
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
     @JsonIgnore
     private List<Order> orders = new ArrayList<>();
@@ -67,12 +70,12 @@ public class User {
         this.enabled = enabled;
     }
 
-    public Role getRole() {
-        return role;
+    public List<Role> getRoles() {
+        return roles;
     }
 
-    public void setRole(Role role) {
-        this.role = role;
+    public void setRoles(List<Role> roles) {
+        this.roles = roles;
     }
 
     public void addOrder(Order order) {

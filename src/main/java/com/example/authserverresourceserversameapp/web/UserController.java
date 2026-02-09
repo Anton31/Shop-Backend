@@ -23,7 +23,7 @@ public class UserController {
 
     @PostMapping
     @ResponseBody
-    public SuccessResponse register(UserDto dto) throws MessagingException {
+    public SuccessResponse register(@RequestBody UserDto dto) throws MessagingException {
         String text = "Message for confirmation registration sand to your email";
         userService.registerNewUserAccount(dto);
         return new SuccessResponse(text);
@@ -48,7 +48,6 @@ public class UserController {
     @GetMapping
     @ResponseBody
     public UserInfo getUserInfo(Principal principal) {
-        System.out.println(principal);
         User user;
         if (principal == null) {
             return null;
@@ -56,14 +55,14 @@ public class UserController {
             user = userService.findByUsername(principal.getName());
         }
         System.out.println(user.getUsername());
-        System.out.println(user.getRole().getName());
-        return new UserInfo(user.getUsername(), user.getRole().getName());
+        System.out.println(user.getRoles().get(0).getName());
+        return new UserInfo(user.getUsername(), user.getRoles().get(0).getName());
     }
 
 
     @PutMapping
     @ResponseBody
-    public SuccessResponse editUser(UserDto dto, Principal principal) {
+    public SuccessResponse editUser(@RequestBody UserDto dto, Principal principal) {
         User user = userService.findByUsername(principal.getName());
         String text = "Password changed";
         userService.editExistingUserAccount(dto, user);
