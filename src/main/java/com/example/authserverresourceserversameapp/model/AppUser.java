@@ -20,12 +20,8 @@ public class AppUser implements UserDetails {
     @Override
     @NullMarked
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        List<SimpleGrantedAuthority> authorities = new ArrayList<>();
-        for (Role role : user.getRoles()) {
-            SimpleGrantedAuthority authority = new SimpleGrantedAuthority(role.getName());
-            authorities.add(authority);
-        }
-        return authorities;
+            SimpleGrantedAuthority authority = new SimpleGrantedAuthority(user.getRole().getName());
+        return List.of(authority);
     }
 
     @Override

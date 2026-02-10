@@ -3,17 +3,13 @@ values (1, 'user');
 insert into role (id, name)
 values (2, 'admin');
 
-insert into users (id, username, email, password, enabled)
+insert into users (id, username, email, password, enabled, role_id)
 values (1, 'Anton', '1@3',
-        '$2a$12$Wdbe4OEBhR/c2Hgbte184uarjDdY56Kb0Hif1d21vzA36XYkGo3rG', true);
-insert into users (id, username, email, password, enabled)
+        '$2a$12$Wdbe4OEBhR/c2Hgbte184uarjDdY56Kb0Hif1d21vzA36XYkGo3rG', true, 1);
+insert into users (id, username, email, password, enabled, role_id)
 values (2, 'Igor', '123@456',
-        '$2a$12$Wdbe4OEBhR/c2Hgbte184uarjDdY56Kb0Hif1d21vzA36XYkGo3rG', true);
+        '$2a$12$Wdbe4OEBhR/c2Hgbte184uarjDdY56Kb0Hif1d21vzA36XYkGo3rG', true, 2);
 
-insert into user_role(user_id, role_id)
-values (1, 1);
-insert into user_role(user_id, role_id)
-values (2, 2);
 
 insert into cart(id, user_id)
 values (1, 1);

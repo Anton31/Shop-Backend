@@ -13,7 +13,7 @@ public class Role {
     @GeneratedValue(generator = "roleGen")
     private Long id;
     private String name;
-    @ManyToMany(mappedBy = "roles")
+    @OneToMany(mappedBy = "role")
     @JsonIgnore
     private List<User> users = new ArrayList<>();
 
@@ -43,10 +43,6 @@ public class Role {
 
     public void addUser(User user) {
         this.users.add(user);
-        if (this.name.equals("admin") && !user.getRoles().isEmpty()) {
-            user.getRoles().set(0, this);
-        } else {
-            user.getRoles().add(this);
-        }
+        user.setRole(this);
     }
 }

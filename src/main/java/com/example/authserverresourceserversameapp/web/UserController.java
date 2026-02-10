@@ -55,8 +55,8 @@ public class UserController {
             user = userService.findByUsername(principal.getName());
         }
         System.out.println(user.getUsername());
-        System.out.println(user.getRoles().get(0).getName());
-        return new UserInfo(user.getUsername(), user.getRoles().get(0).getName());
+        System.out.println(user.getRole().getName());
+        return new UserInfo(user.getUsername(), user.getRole().getName());
     }
 
 
