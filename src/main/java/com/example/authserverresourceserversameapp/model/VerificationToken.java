@@ -1,35 +1,47 @@
 package com.example.authserverresourceserversameapp.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+
+import java.util.Calendar;
+import java.util.Date;
 
 @Entity(name = "tokens")
 public class VerificationToken {
 
+    private static final int EXPIRATION = 30;
+
     @Id
-    @SequenceGenerator(name = "tokenGen", sequenceName = "tokenSeq", initialValue = 10)
-    @GeneratedValue(generator = "tokenGen")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     private String token;
 
-    @OneToOne(fetch = FetchType.EAGER, targetEntity = User.class)
-    @JsonIgnore
+    @OneToOne
     private User user;
 
+    private Date expiryDate;
+
     public VerificationToken() {
+        super();
+    }
+
+    public VerificationToken(String token) {
+        super();
+
+        this.token = token;
+        this.expiryDate = calculateExpiryDate();
     }
 
     public VerificationToken(String token, User user) {
+        super();
+
         this.token = token;
         this.user = user;
+        this.expiryDate = calculateExpiryDate();
     }
 
     public Long getId() {
         return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public String getToken() {
@@ -48,7 +60,23 @@ public class VerificationToken {
         this.user = user;
     }
 
-    public void updateToken(final String token) {
+    public Date getExpiryDate() {
+        return expiryDate;
+    }
+
+    public void setExpiryDate(Date expiryDate) {
+        this.expiryDate = expiryDate;
+    }
+
+    private Date calculateExpiryDate() {
+        Calendar cal = Calendar.getInstance();
+        cal.setTimeInMillis(new Date().getTime());
+        cal.add(Calendar.SECOND, VerificationToken.EXPIRATION);
+        return new Date(cal.getTime().getTime());
+    }
+
+    public void updateToken(String token) {
         this.token = token;
+        this.expiryDate = calculateExpiryDate();
     }
 }

@@ -11,6 +11,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
+import java.util.Calendar;
 
 @Controller
 @RequestMapping("/user")
@@ -30,19 +31,22 @@ public class UserController {
     }
 
     @GetMapping("/registrationConfirm")
-    public String confirmRegistration(@RequestParam String token) {
+    public String confirmRegistration(@RequestParam String token) throws MessagingException {
         VerificationToken verificationToken = userService.getToken(token);
         User user = verificationToken.getUser();
+        Calendar cal = Calendar.getInstance();
+        if ((verificationToken.getExpiryDate().getTime() - cal.getTime().getTime()) <= 0) {
+            userService.generateNewVerificationToken(token);
+        }
         user.setEnabled(true);
         userService.saveRegisteredUser(user);
         return "redirect:http://localhost:4200";
     }
 
     @GetMapping("/resendRegistrationToken")
-    @ResponseBody
-    public SuccessResponse resendRegistrationToken(@RequestParam("token") final String existingToken) throws MessagingException {
+    public String resendRegistrationToken(@RequestParam("token") String existingToken) throws MessagingException {
         userService.generateNewVerificationToken(existingToken);
-        return new SuccessResponse("Message for confirmation registration sand to your email");
+        return "redirect:http://localhost:4200";
     }
 
     @GetMapping
