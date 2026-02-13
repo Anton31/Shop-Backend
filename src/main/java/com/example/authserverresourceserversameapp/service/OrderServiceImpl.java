@@ -32,14 +32,14 @@ public class OrderServiceImpl implements OrderService {
 
 
     @Override
-    public Cart addItem(ItemDto dto, User user) {
+    public long addItem(ItemDto dto, User user) {
         Product product = productRepository.findById(dto.getProductId()).get();
         Cart cart = cartRepository.getByUser(user);
         Item item = new Item();
         cart.addItem(item);
         product.addItem(item);
         item.setQuantity(1);
-        return cartRepository.save(cart);
+        return cartRepository.save(cart).getId();
     }
 
     /**
@@ -48,7 +48,7 @@ public class OrderServiceImpl implements OrderService {
      * @return cart with edited new item
      */
     @Override
-    public Cart editItem(ItemDto dto) {
+    public long editItem(ItemDto dto) {
         Item item = itemRepository.findById(dto.getItemId()).get();
         Cart cart = item.getCart();
         if (item.getQuantity() == 1 && dto.getQuantity() == -1) {
@@ -56,7 +56,7 @@ public class OrderServiceImpl implements OrderService {
         } else {
             item.setQuantity(item.getQuantity() + dto.getQuantity());
         }
-        return cartRepository.save(cart);
+        return cartRepository.save(cart).getId();
     }
 
     /**

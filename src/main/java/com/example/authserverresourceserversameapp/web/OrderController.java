@@ -35,7 +35,7 @@ public class OrderController {
     }
 
     @PostMapping
-    public Cart addItem(@RequestBody ItemDto dto, Principal principal) {
+    public Long addItem(@RequestBody ItemDto dto, Principal principal) {
         User user;
         if (principal == null) {
             return null;
@@ -46,7 +46,7 @@ public class OrderController {
     }
 
     @PutMapping
-    public Cart editItem(@RequestBody ItemDto dto) {
+    public Long editItem(@RequestBody ItemDto dto) {
         return orderService.editItem(dto);
     }
 

@@ -68,16 +68,13 @@ public class SecurityConfig {
                                 new MediaTypeRequestMatcher(MediaType.TEXT_HTML)
                         )
                 );
-
         http.csrf(AbstractHttpConfigurer::disable);
         http.cors(Customizer.withDefaults());
-
         return http.build();
     }
 
     @Bean
     public SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
-
         http.authorizeHttpRequests(authorizeRequests ->
                         authorizeRequests
                                 .requestMatchers(
@@ -89,19 +86,16 @@ public class SecurityConfig {
                                 .hasRole("admin")
                                 .requestMatchers(HttpMethod.DELETE, "/products/**")
                                 .hasRole("admin")
-                                .requestMatchers("/cart/**").hasRole("user"))
+                                .requestMatchers("/cart/**")
+                                .hasRole("user"))
                 .formLogin(Customizer.withDefaults())
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(Customizer.withDefaults())
-
                 .headers(headers ->
                         headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin))
-
                 .oauth2ResourceServer((oauth2) -> oauth2
                         .jwt(jwtConfigurer -> jwtConfigurer.jwtAuthenticationConverter(converter)))
-
                 .authenticationProvider(authenticationProvider());
-
         return http.build();
     }
 
