@@ -62,7 +62,7 @@ public class OrderController {
     }
 
     @PostMapping("/order")
-    public List<Order> addOrder(@RequestBody OrderDto dto, Principal principal) {
+    public Long addOrder(@RequestBody OrderDto dto, Principal principal) {
         User user;
         if (principal == null) {
             return null;

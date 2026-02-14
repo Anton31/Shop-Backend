@@ -76,7 +76,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public List<Order> addOrder(OrderDto dto, User user) {
+    public long addOrder(OrderDto dto, User user) {
         Cart cart = cartRepository.getByUser(user);
         Order order = new Order();
         user.addOrder(order);
@@ -86,8 +86,7 @@ public class OrderServiceImpl implements OrderService {
             order.addItem(item);
         }
         order.setName(dto.getName());
-        orderRepository.save(order);
-        return orderRepository.getAllByUser(user);
+        return orderRepository.save(order).getId();
     }
 
     /**

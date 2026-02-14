@@ -17,7 +17,7 @@ public interface OrderService {
 
     List<Order> getOrders(User user);
 
-    List<Order> addOrder(OrderDto dto, User user);
+    long addOrder(OrderDto dto, User user);
 
     long deleteItem(long itemId);
 

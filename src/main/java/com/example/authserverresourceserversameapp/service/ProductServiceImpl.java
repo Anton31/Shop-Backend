@@ -127,7 +127,7 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public List<Brand> getProductBrands(Long typeId, String sort, String dir) {
         if (typeId == null) {
-            return brandRepository.findAll(Sort.by(Sort.Direction.fromString(dir), sort));
+            return null;
         }
         return brandRepository.getAllByTypesId(typeId, Sort.by(Sort.Direction.fromString(dir), sort));
     }
