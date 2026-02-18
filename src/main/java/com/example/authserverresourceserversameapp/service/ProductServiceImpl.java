@@ -113,7 +113,7 @@ public class ProductServiceImpl implements ProductService {
      */
     @Override
     public List<Type> getProductTypes(String sort, String dir) {
-        return typeRepository.getProductTypes(Sort.by(Sort.Direction.fromString(dir), sort));
+        return typeRepository.getProductTypes(1L, Sort.by(Sort.Direction.fromString(dir), sort));
     }
 
 
@@ -129,7 +129,7 @@ public class ProductServiceImpl implements ProductService {
         if (typeId == null) {
             return null;
         }
-        return brandRepository.getAllByTypesId(typeId, Sort.by(Sort.Direction.fromString(dir), sort));
+        return brandRepository.getAllByIdAfterAndTypesId(1L, typeId, Sort.by(Sort.Direction.fromString(dir), sort));
     }
 
 
