@@ -52,24 +52,21 @@ public class SecurityConfig {
     @Order(Ordered.HIGHEST_PRECEDENCE)
     public SecurityFilterChain authorizationServerSecurityFilterChain(HttpSecurity http)
             throws Exception {
-        http
-                .oauth2AuthorizationServer((authorizationServer) -> {
+
+        http.oauth2AuthorizationServer((authorizationServer) -> {
                     http.securityMatcher(authorizationServer.getEndpointsMatcher());
-                    authorizationServer
-                            .oidc(withDefaults());    // Enable OpenID Connect 1.0
+                    authorizationServer.oidc(withDefaults());
                 })
                 .authorizeHttpRequests((authorize) ->
                         authorize
-                                .anyRequest().authenticated()
-                )
+                                .anyRequest().authenticated())
                 .exceptionHandling((exceptions) -> exceptions
                         .defaultAuthenticationEntryPointFor(
                                 new LoginUrlAuthenticationEntryPoint("/login"),
-                                new MediaTypeRequestMatcher(MediaType.TEXT_HTML)
-                        )
-                );
-        http.csrf(AbstractHttpConfigurer::disable);
+                                new MediaTypeRequestMatcher(MediaType.TEXT_HTML)));
+
         http.cors(Customizer.withDefaults());
+
         return http.build();
     }
 
