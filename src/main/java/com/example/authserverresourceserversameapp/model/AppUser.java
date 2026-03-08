@@ -5,7 +5,6 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -20,7 +19,7 @@ public class AppUser implements UserDetails {
     @Override
     @NullMarked
     public Collection<? extends GrantedAuthority> getAuthorities() {
-            SimpleGrantedAuthority authority = new SimpleGrantedAuthority(user.getRole().getName());
+        SimpleGrantedAuthority authority = new SimpleGrantedAuthority(user.getRole().getName());
         return List.of(authority);
     }
 

@@ -1,6 +1,5 @@
 package com.example.authserverresourceserversameapp.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.util.ArrayList;
@@ -20,9 +19,6 @@ public class Product {
     private Type type;
     @ManyToOne
     private Brand brand;
-    @JsonIgnore
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "product")
-    private List<Item> items = new ArrayList<>();
 
     public Long getId() {
         return id;
@@ -72,14 +68,6 @@ public class Product {
         this.brand = brand;
     }
 
-    public List<Item> getItems() {
-        return items;
-    }
-
-    public void setItems(List<Item> items) {
-        this.items = items;
-    }
-
     public void addPhoto(Photo photo) {
         this.photos.add(photo);
         photo.setProduct(this);
@@ -88,10 +76,5 @@ public class Product {
     public void removePhoto(Photo photo) {
         this.photos.remove(photo);
         photo.setProduct(null);
-    }
-
-    public void addItem(Item item) {
-        this.items.add(item);
-        item.setProduct(this);
     }
 }

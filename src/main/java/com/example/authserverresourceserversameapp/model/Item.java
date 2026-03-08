@@ -11,7 +11,7 @@ public class Item {
     private Long id;
     private long quantity;
     private transient long totalPrice;
-    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @ManyToOne
     private Product product;
     @ManyToOne
     @JsonIgnore
@@ -21,6 +21,10 @@ public class Item {
     private Order order;
 
     public Item() {
+    }
+
+    public Item(Product product) {
+        this.product = product;
     }
 
     public Long getId() {
@@ -41,10 +45,6 @@ public class Item {
 
     public Product getProduct() {
         return product;
-    }
-
-    public void setProduct(Product product) {
-        this.product = product;
     }
 
     public Cart getCart() {
