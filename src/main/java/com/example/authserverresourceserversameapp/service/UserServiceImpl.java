@@ -54,11 +54,8 @@ public class UserServiceImpl implements UserService {
         User user = new User();
         Role role;
         role = roleRepository.findAllByName(dto.getRole());
-        if (role == null) {
-            role = new Role();
-        }
         role.setName(dto.getRole());
-        role.addUser(user);
+        user.setRole(role);
         user.setUsername(dto.getUsername());
         user.setEmail(dto.getEmail());
         user.setPassword(passwordEncoder.encode(dto.getPassword()));
@@ -82,6 +79,7 @@ public class UserServiceImpl implements UserService {
             throw new PasswordsDontMatchException();
         }
         Role role = roleRepository.findAllByName(dto.getRole());
+        user.setRole(role);
         user.setPassword(passwordEncoder.encode(dto.getPassword()));
         userRepository.save(user);
     }
