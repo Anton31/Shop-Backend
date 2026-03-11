@@ -78,13 +78,13 @@ public class OrderServiceImpl implements OrderService {
     public long addOrder(OrderDto dto, User user) {
         Cart cart = cartRepository.getByUser(user);
         Order order = new Order();
-        user.addOrder(order);
+        order.setUser(user);
+        order.setName(dto.getName());
         List<Item> items = new ArrayList<>(cart.getItems());
         for (Item item : items) {
             cart.removeItem(item);
             order.addItem(item);
         }
-        order.setName(dto.getName());
         return orderRepository.save(order).getId();
     }
 
