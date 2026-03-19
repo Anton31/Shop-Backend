@@ -78,8 +78,8 @@ public class ProductServiceTest {
         type = new Type();
         type.setId(2L);
         type.setName("Car");
-        type.addProduct(product);
-        brand.addProduct(product);
+        product.setType(type);
+        product.setBrand(brand);
         photoDto = new PhotoDto();
         photoDto.setProductId(1L);
     }

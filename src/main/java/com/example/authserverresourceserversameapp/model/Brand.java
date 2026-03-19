@@ -13,9 +13,7 @@ public class Brand {
     @GeneratedValue(generator = "brandGen")
     private long id;
     private String name;
-    @OneToMany(mappedBy = "brand")
-    @JsonIgnore
-    private List<Product> products = new ArrayList<>();
+
     @ManyToMany(mappedBy = "brands")
     @JsonIgnore
     private List<Type> types = new ArrayList<>();
@@ -36,30 +34,12 @@ public class Brand {
         this.name = name;
     }
 
-    public List<Product> getProducts() {
-        return products;
-    }
-
-    public void setProducts(List<Product> products) {
-        this.products = products;
-    }
-
     public List<Type> getTypes() {
         return types;
     }
 
     public void setTypes(List<Type> types) {
         this.types = types;
-    }
-
-    public void addProduct(Product product) {
-        this.products.add(product);
-        product.setBrand(this);
-    }
-
-    public void removeProduct(Product product) {
-        this.products.remove(product);
-        product.setBrand(null);
     }
 
     @PreRemove

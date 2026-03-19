@@ -1,6 +1,5 @@
 package com.example.authserverresourceserversameapp.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.util.ArrayList;
@@ -13,9 +12,6 @@ public class Type {
     @GeneratedValue(generator = "typeGen")
     private long id;
     private String name;
-    @OneToMany(mappedBy = "type")
-    @JsonIgnore
-    private List<Product> products = new ArrayList<>();
     @ManyToMany
     @JoinTable(name = "type_brand", joinColumns = @JoinColumn(name = "type_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "brand_id", referencedColumnName = "id")
@@ -38,31 +34,12 @@ public class Type {
         this.name = name;
     }
 
-
-    public List<Product> getProducts() {
-        return products;
-    }
-
-    public void setProducts(List<Product> products) {
-        this.products = products;
-    }
-
     public List<Brand> getBrands() {
         return brands;
     }
 
     public void setBrands(List<Brand> brands) {
         this.brands = brands;
-    }
-
-    public void addProduct(Product product) {
-        this.products.add(product);
-        product.setType(this);
-    }
-
-    public void removeProduct(Product product) {
-        this.products.remove(product);
-        product.setType(null);
     }
 
     public void addBrand(Brand brand) {
