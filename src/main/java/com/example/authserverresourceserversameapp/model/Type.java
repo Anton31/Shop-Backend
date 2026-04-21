@@ -1,9 +1,9 @@
 package com.example.authserverresourceserversameapp.model;
 
-import jakarta.persistence.*;
-
-import java.util.ArrayList;
-import java.util.List;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+import jakarta.persistence.SequenceGenerator;
 
 @Entity
 public class Type {
@@ -12,11 +12,6 @@ public class Type {
     @GeneratedValue(generator = "typeGen")
     private long id;
     private String name;
-    @ManyToMany
-    @JoinTable(name = "type_brand", joinColumns = @JoinColumn(name = "type_id", referencedColumnName = "id"),
-            inverseJoinColumns = @JoinColumn(name = "brand_id", referencedColumnName = "id")
-    )
-    private List<Brand> brands = new ArrayList<>();
 
     public long getId() {
         return id;
@@ -34,21 +29,4 @@ public class Type {
         this.name = name;
     }
 
-    public List<Brand> getBrands() {
-        return brands;
-    }
-
-    public void setBrands(List<Brand> brands) {
-        this.brands = brands;
-    }
-
-    public void addBrand(Brand brand) {
-        this.brands.add(brand);
-        brand.getTypes().add(this);
-    }
-
-    public void removeBrand(Brand brand) {
-        this.brands.remove(brand);
-        brand.getTypes().remove(this);
-    }
 }

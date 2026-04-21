@@ -39,15 +39,15 @@ insert into brand (id, name)
 values (6, 'Samsung');
 
 
-insert into type_brand(type_id, brand_id)
+insert into brand_type(type_id, brand_id)
 values (2, 2);
-insert into type_brand(type_id, brand_id)
+insert into brand_type(type_id, brand_id)
 values (2, 3);
-insert into type_brand(type_id, brand_id)
+insert into brand_type(type_id, brand_id)
 values (2, 4);
-insert into type_brand(type_id, brand_id)
+insert into brand_type(type_id, brand_id)
 values (3, 5);
-insert into type_brand(type_id, brand_id)
+insert into brand_type(type_id, brand_id)
 values (3, 6);
 
 

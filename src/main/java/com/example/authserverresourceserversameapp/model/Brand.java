@@ -1,6 +1,5 @@
 package com.example.authserverresourceserversameapp.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.util.ArrayList;
@@ -14,8 +13,10 @@ public class Brand {
     private long id;
     private String name;
 
-    @ManyToMany(mappedBy = "brands")
-    @JsonIgnore
+    @ManyToMany
+    @JoinTable(name = "brand_type", joinColumns = @JoinColumn(name = "brand_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "type_id", referencedColumnName = "id")
+    )
     private List<Type> types = new ArrayList<>();
 
     public long getId() {
@@ -42,12 +43,12 @@ public class Brand {
         this.types = types;
     }
 
-    @PreRemove
-    public void removeTypeAssociations() {
-        List<Type> toDelete = new ArrayList<>(this.types);
-        for (Type type : toDelete) {
-            type.removeBrand(this);
-            this.getTypes().remove(type);
-        }
+    public void addType(Type type) {
+        this.types.add(type);
     }
+
+    public void removeType(Type type) {
+        this.types.remove(type);
+    }
+
 }

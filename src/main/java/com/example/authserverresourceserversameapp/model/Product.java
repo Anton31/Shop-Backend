@@ -15,9 +15,9 @@ public class Product {
     private int price;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "product")
     private List<Photo> photos = new ArrayList<>();
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private Type type;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private Brand brand;
 
     public Long getId() {
