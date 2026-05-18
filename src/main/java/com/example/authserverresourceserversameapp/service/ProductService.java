@@ -13,8 +13,7 @@ import java.util.List;
 
 public interface ProductService {
 
-    List<Product> getProducts(Long typeId, Long brandId,
-                              String sort, String dir);
+    List<Product> getProducts(Long typeId, Long brandId, String sort, String dir);
 
     Product getProduct(long id);
 

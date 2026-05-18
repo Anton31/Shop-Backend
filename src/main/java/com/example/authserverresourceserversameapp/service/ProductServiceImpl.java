@@ -57,8 +57,7 @@ public class ProductServiceImpl implements ProductService {
      * @return dto with list of products
      */
     @Override
-    public List<Product> getProducts(Long typeId, Long brandId,
-                                     String sort, String dir) {
+    public List<Product> getProducts(Long typeId, Long brandId, String sort, String dir) {
 
         List<Product> products;
         if (sort.equals("type")) {
@@ -91,7 +90,7 @@ public class ProductServiceImpl implements ProductService {
      * gets all types from database
      *
      * @param sort parameter of sorting
-     * @param dir  direction of sorting
+     * @param dir direction of sorting
      * @return list of types
      */
     @Override
@@ -99,6 +98,12 @@ public class ProductServiceImpl implements ProductService {
         return typeRepository.getAllByIdAfter(1L, Sort.by(Sort.Direction.fromString(dir), sort));
     }
 
+    /**
+     *
+     * @param sort parameter of sorting
+     * @param dir direction of sorting
+     * @return list of brands
+     */
     @Override
     public List<Brand> getAllBrands(String sort, String dir) {
         return brandRepository.getAllByIdAfter(1L, Sort.by(Sort.Direction.fromString(dir), sort));
@@ -230,7 +235,7 @@ public class ProductServiceImpl implements ProductService {
      * adds new photos to existing product
      *
      * @param dto dto with list of new photos
-     * @return id of product to which new photos has been added
+     * @return id of product
      */
     @Override
     public long addPhotos(PhotoDto dto) {
@@ -257,8 +262,11 @@ public class ProductServiceImpl implements ProductService {
     }
 
     /**
+     * removes one photo of product
+     *
      * @param productId id of product
-     * @param photoId   id of  photo to delete
+     * @param photoId   id of photo to delete
+     * @return id of product
      */
     @Override
     public long removePhoto(long productId, long photoId) {
@@ -280,6 +288,12 @@ public class ProductServiceImpl implements ProductService {
         return productId;
     }
 
+    /**
+     * removes all photos of product
+     *
+     * @param productId id of product
+     * @return id of product
+     */
     public long removePhotos(long productId) {
         Product product = productRepository.findById(productId).get();
         List<Photo> photos = new ArrayList<>(product.getPhotos());

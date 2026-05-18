@@ -7,6 +7,7 @@ import com.example.authserverresourceserversameapp.model.User;
 import com.example.authserverresourceserversameapp.model.VerificationToken;
 import com.example.authserverresourceserversameapp.service.UserService;
 import jakarta.mail.MessagingException;
+import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,7 +25,7 @@ public class UserController {
 
     @PostMapping
     @ResponseBody
-    public SuccessResponse register(@RequestBody UserDto dto) throws MessagingException {
+    public SuccessResponse register(@RequestBody @Valid UserDto dto) throws MessagingException {
         String text = "Message for confirmation registration sand to your email";
         userService.registerNewUserAccount(dto);
         return new SuccessResponse(text);
@@ -60,13 +61,13 @@ public class UserController {
         }
         System.out.println(user.getUsername());
         System.out.println(user.getRole().getName());
-        return new UserInfo(user.getUsername(), user.getRole().getName());
+        return new UserInfo(user.getUsername(), user.getEmail(), user.getRole().getName());
     }
 
 
     @PutMapping
     @ResponseBody
-    public SuccessResponse editUser(@RequestBody UserDto dto, Principal principal) {
+    public SuccessResponse editUser(@RequestBody @Valid UserDto dto, Principal principal) {
         User user = userService.findByUsername(principal.getName());
         String text = "Password changed";
         userService.editExistingUserAccount(dto, user);

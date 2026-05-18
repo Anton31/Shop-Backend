@@ -1,9 +1,13 @@
 package com.example.authserverresourceserversameapp.dto;
 
 
+import jakarta.validation.constraints.NotBlank;
+
 public class UserDto {
     private String role;
+    @NotBlank(message = "username is mandatory")
     private String username;
+    @NotBlank(message = "email is mandatory")
     private String email;
 
     private String password;
