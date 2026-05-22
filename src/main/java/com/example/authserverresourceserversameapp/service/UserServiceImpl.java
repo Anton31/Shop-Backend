@@ -1,6 +1,7 @@
 package com.example.authserverresourceserversameapp.service;
 
 import com.example.authserverresourceserversameapp.dto.UserDto;
+import com.example.authserverresourceserversameapp.exception.InvalidPasswordException;
 import com.example.authserverresourceserversameapp.exception.PasswordsDontMatchException;
 import com.example.authserverresourceserversameapp.exception.UserExistsException;
 import com.example.authserverresourceserversameapp.model.Cart;
@@ -19,12 +20,16 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.UUID;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 
 @Service
 public class UserServiceImpl implements UserService {
     private static final String NOREPLY_ADDRESS = "noreply@test.com";
     private static final String APP_URL = "http://localhost:8080";
+    private static final String PASSWORD_REGEX = "^(?=.*[0-9])(?=.*[A-Z]).{2,}$";
+
 
     private final JavaMailSender mailSender;
     private final PasswordEncoder passwordEncoder;
@@ -37,7 +42,8 @@ public class UserServiceImpl implements UserService {
                            PasswordEncoder passwordEncoder,
                            UserRepository userRepository,
                            TokenRepository tokenRepository,
-                           RoleRepository roleRepository, CartRepository cartRepository) {
+                           RoleRepository roleRepository,
+                           CartRepository cartRepository) {
         this.mailSender = mailSender;
         this.passwordEncoder = passwordEncoder;
         this.userRepository = userRepository;
@@ -46,8 +52,19 @@ public class UserServiceImpl implements UserService {
         this.cartRepository = cartRepository;
     }
 
+    public boolean isValid(String password) {
+        if (password == null) return false;
+        Pattern pattern = Pattern.compile(PASSWORD_REGEX);
+        Matcher matcher = pattern.matcher(password);
+        return matcher.matches();
+    }
+
+
     @Override
     public User registerNewUserAccount(UserDto dto) throws MessagingException {
+        if (!isValid(dto.getPassword())) {
+            throw new InvalidPasswordException();
+        }
         if (!dto.getPassword().equals(dto.getPasswordConfirmed())) {
             throw new PasswordsDontMatchException();
         }
@@ -58,6 +75,8 @@ public class UserServiceImpl implements UserService {
         user.setRole(role);
         user.setUsername(dto.getUsername());
         user.setEmail(dto.getEmail());
+
+
         user.setPassword(passwordEncoder.encode(dto.getPassword()));
         if (userRepository.getByUsername(dto.getUsername()) != null) {
             throw new UserExistsException("User with username: \"" + dto.getUsername() + "\" already exists!");
@@ -65,6 +84,7 @@ public class UserServiceImpl implements UserService {
         if (userRepository.getByEmail(dto.getEmail()) != null) {
             throw new UserExistsException("User with email: \"" + dto.getEmail() + "\" already exists!");
         }
+
         User registered = userRepository.save(user);
         Cart cart = new Cart(registered);
         cartRepository.save(cart);

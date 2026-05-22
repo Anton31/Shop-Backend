@@ -41,6 +41,15 @@ public class ProductControllerExceptionHandler {
         return ResponseEntity.status(409).body(response);
     }
 
+    @ExceptionHandler(InvalidPasswordException.class)
+    @ResponseBody
+    @ResponseStatus(HttpStatus.CONFLICT)
+    protected ResponseEntity<ErrorResponse> handleInvalidPasswordException(RuntimeException ex) {
+        ErrorResponse response = new ErrorResponse(ex.getMessage());
+        return ResponseEntity.status(409).body(response);
+    }
+
+
     @ExceptionHandler(ProductExistsException.class)
     @ResponseBody
     @ResponseStatus(HttpStatus.CONFLICT)
@@ -72,6 +81,7 @@ public class ProductControllerExceptionHandler {
         ErrorResponse response = new ErrorResponse(ex.getMessage());
         return ResponseEntity.status(403).body(response);
     }
+
 
     @ExceptionHandler(TypeNoneCanNotBeUpdatedOrDeletedException.class)
     @ResponseBody
