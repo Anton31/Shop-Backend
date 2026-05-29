@@ -6,8 +6,8 @@ import jakarta.validation.constraints.Size;
 
 public class ProductDto {
     private Long id;
-    private long typeId;
-    private long brandId;
+    private Long typeId;
+    private Long brandId;
     @NotBlank(message = "Name is mandatory")
     @Size(min = 3, max = 16, message = "Name must be between 3 and 16 characters")
     private String name;
@@ -21,19 +21,19 @@ public class ProductDto {
         this.id = id;
     }
 
-    public long getTypeId() {
+    public Long getTypeId() {
         return typeId;
     }
 
-    public void setTypeId(long typeId) {
+    public void setTypeId(Long typeId) {
         this.typeId = typeId;
     }
 
-    public long getBrandId() {
+    public Long getBrandId() {
         return brandId;
     }
 
-    public void setBrandId(long brandId) {
+    public void setBrandId(Long brandId) {
         this.brandId = brandId;
     }
 

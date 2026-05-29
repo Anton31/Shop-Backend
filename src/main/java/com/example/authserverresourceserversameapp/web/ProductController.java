@@ -23,7 +23,7 @@ public class ProductController {
         this.productService = productService;
     }
 
-    @GetMapping(value = "/product")
+    @GetMapping("/product")
     public List<Product> getProducts(@RequestParam(required = false) Long typeId,
                                      @RequestParam(required = false) Long brandId,
                                      @RequestParam(required = false, defaultValue = "name") String sort,
