@@ -73,10 +73,10 @@ public class ProductServiceTest {
         product.setName("Mercedes S600");
         product.addPhoto(photo);
         brand = new Brand();
-        brand.setId(2L);
+        brand.setId(1L);
         brand.setName("Mercedes");
         type = new Type();
-        type.setId(2L);
+        type.setId(1L);
         type.setName("Car");
         product.setType(type);
         product.setBrand(brand);
@@ -136,6 +136,9 @@ public class ProductServiceTest {
         product1.setName("Mercedes S500");
         ProductDto dto = new ProductDto();
         dto.setId(null);
+        dto.setName("Mercedes S500");
+        dto.setTypeId(1L);
+        dto.setBrandId(1L);
         given(productRepository.save(any(Product.class))).willReturn(product1);
         given(typeRepository.findById(anyLong())).willReturn(Optional.ofNullable(type));
         given(brandRepository.findById(anyLong())).willReturn(Optional.ofNullable(brand));
@@ -148,8 +151,6 @@ public class ProductServiceTest {
         ProductDto dto = new ProductDto();
         dto.setId(null);
         dto.setName("Mercedes S600");
-        given(typeRepository.findById(anyLong())).willReturn(Optional.ofNullable(type));
-        given(brandRepository.findById(anyLong())).willReturn(Optional.ofNullable(brand));
         given(productRepository.findByName(anyString())).willThrow(new ProductExistsException("Mercedes S600"));
         ProductExistsException exception = assertThrows(ProductExistsException.class,
                 () -> productService.addProduct(dto));
@@ -164,11 +165,11 @@ public class ProductServiceTest {
         List<Type> types = new ArrayList<>();
         types.add(type);
         types.add(type1);
-        given(typeRepository.getAllByIdAfter(anyLong(), any(Sort.class))).willReturn(types);
+        given(typeRepository.findAll(any(Sort.class))).willReturn(types);
         List<Type> serviceTypes = productService.getAllTypes("name", "ASC");
         assertThat(serviceTypes).isNotNull();
         assertThat(serviceTypes.size()).isEqualTo(2);
-        assertThat(serviceTypes.get(0).getId()).isEqualTo(2L);
+        assertThat(serviceTypes.get(0).getId()).isEqualTo(1L);
         assertThat(serviceTypes.get(0).getName()).isEqualTo("Car");
         assertThat(serviceTypes.get(1).getId()).isEqualTo(2L);
         assertThat(serviceTypes.get(1).getName()).isEqualTo("Smartphone");

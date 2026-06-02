@@ -13,11 +13,9 @@ import com.example.authserverresourceserversameapp.model.Product;
 import com.example.authserverresourceserversameapp.model.Type;
 import com.example.authserverresourceserversameapp.service.AppUserDetailsService;
 import com.example.authserverresourceserversameapp.service.ProductService;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
@@ -26,7 +24,6 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.ArrayList;
 import java.util.List;
-
 
 import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.ArgumentMatchers.*;
@@ -57,10 +54,10 @@ public class ProductControllerTest {
         product.setId(1L);
         product.setName("Mercedes S600");
         type = new Type();
-        type.setId(2L);
+        type.setId(1L);
         type.setName("Car");
         brand = new Brand();
-        brand.setId(2L);
+        brand.setId(1L);
         brand.setName("Mercedes");
         photo = new Photo();
         photo.setId(1L);
@@ -102,7 +99,7 @@ public class ProductControllerTest {
         this.mockMvc.perform(get("/products/type").accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(2)))
-                .andExpect(jsonPath("$[0].id").value(2))
+                .andExpect(jsonPath("$[0].id").value(1))
                 .andExpect(jsonPath("$[0].name").value("Car"))
                 .andExpect(jsonPath("$[1].id").value(2))
                 .andExpect(jsonPath("$[1].name").value("Smartphone"));
@@ -113,7 +110,7 @@ public class ProductControllerTest {
     @WithMockUser
     public void getBrandsTest() throws Exception {
         Brand brand1 = new Brand();
-        brand1.setId(3L);
+        brand1.setId(2L);
         brand1.setName("BMW");
         List<Brand> brands = new ArrayList<>();
         brands.add(brand);
@@ -122,9 +119,9 @@ public class ProductControllerTest {
         this.mockMvc.perform(get("/products/productBrand?typeId=2").accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(2)))
-                .andExpect(jsonPath("$[0].id").value(2))
+                .andExpect(jsonPath("$[0].id").value(1))
                 .andExpect(jsonPath("$[0].name").value("Mercedes"))
-                .andExpect(jsonPath("$[1].id").value(3))
+                .andExpect(jsonPath("$[1].id").value(2))
                 .andExpect(jsonPath("$[1].name").value("BMW"));
     }
 
