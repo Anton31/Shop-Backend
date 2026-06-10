@@ -72,8 +72,8 @@ public class OrderController {
         return orderService.addOrder(dto, user);
     }
 
-    @DeleteMapping("/order/{itemId}")
-    public long deleteOrder(@PathVariable long itemId) {
-        return orderService.deleteOrder(itemId);
+    @DeleteMapping("/order/{orderId}")
+    public long deleteOrder(@PathVariable long orderId) {
+        return orderService.deleteOrder(orderId);
     }
 }

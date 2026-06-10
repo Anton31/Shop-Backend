@@ -103,16 +103,9 @@ public class OrderServiceImpl implements OrderService {
         return itemId;
     }
 
-
     @Override
-    public long deleteOrder(long itemId) {
-        Item item = itemRepository.findById(itemId).get();
-        Order order = item.getOrder();
-        order.removeItem(item);
-        itemRepository.delete(item);
-        if (order.getItems().isEmpty()) {
-            orderRepository.delete(order);
-        }
-        return itemId;
+    public long deleteOrder(long orderId) {
+        orderRepository.deleteById(orderId);
+        return orderId;
     }
 }

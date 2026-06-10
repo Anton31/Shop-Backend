@@ -21,5 +21,5 @@ public interface OrderService {
 
     long deleteItem(long itemId);
 
-    long deleteOrder(long itemId);
+    long deleteOrder(long orderId);
 }
