@@ -9,6 +9,8 @@ import java.util.List;
 public interface BrandRepository extends JpaRepository<Brand, Long> {
     Brand getOneByName(String name);
 
+    List<Brand> getAllByIdAfter(long id, Sort sort);
+
     List<Brand> getAllByTypesId(long typeId, Sort sort);
 }
 

@@ -10,7 +10,9 @@ import java.util.List;
 public interface TypeRepository extends JpaRepository<Type, Long> {
     Type getOneByName(String name);
 
-    @Query("select t from Product p join p.type t")
-    List<Type> getProductTypes(Sort sort);
+    List<Type> getAllByIdAfter(long id, Sort sort);
+
+    @Query("select t from Product p join p.type t order by t.id")
+    List<Type> getProductTypes();
 
 }
