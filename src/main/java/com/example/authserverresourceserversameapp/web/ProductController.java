@@ -24,8 +24,8 @@ public class ProductController {
     }
 
     @GetMapping("/product")
-    public List<Product> getProducts(@RequestParam(required = false, defaultValue = "0") Long typeId,
-                                     @RequestParam(required = false, defaultValue = "0") Long brandId,
+    public List<Product> getProducts(@RequestParam(required = false) Long typeId,
+                                     @RequestParam(required = false) Long brandId,
                                      @RequestParam(required = false, defaultValue = "name") String sort,
                                      @RequestParam(required = false, defaultValue = "ASC") String dir) {
         return productService.getProducts(typeId, brandId, sort, dir);

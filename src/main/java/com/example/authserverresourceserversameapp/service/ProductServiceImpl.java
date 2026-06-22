@@ -66,11 +66,11 @@ public class ProductServiceImpl implements ProductService {
         if (sort.equals("brand")) {
             sort = "brand.name";
         }
-        if (typeId == 0 && brandId == 0) {
+        if (typeId == null && brandId == null) {
             products = productRepository.findAll(Sort.by(Sort.Direction.fromString(dir), sort));
-        } else if (typeId > 0 && brandId == 0) {
+        } else if (typeId != null && brandId == null) {
             products = productRepository.getAllByTypeId(typeId, Sort.by(Sort.Direction.fromString(dir), sort));
-        } else if (typeId == 0) {
+        } else if (typeId == null) {
             products = productRepository.getAllByBrandId(brandId,
                     Sort.by(Sort.Direction.fromString(dir), sort));
         } else {
@@ -131,6 +131,9 @@ public class ProductServiceImpl implements ProductService {
      */
     @Override
     public List<Brand> getProductBrands(Long typeId, String sort, String dir) {
+        if (typeId == null) {
+            return null;
+        }
         return brandRepository.getAllByTypesId(typeId, Sort.by(Sort.Direction.fromString(dir), sort));
     }
 
@@ -161,7 +164,6 @@ public class ProductServiceImpl implements ProductService {
             productBrand.removeType(productType);
             brand.addType(type);
         }
-
         product.setType(type);
         product.setBrand(brand);
         product.setName(dto.getName());
