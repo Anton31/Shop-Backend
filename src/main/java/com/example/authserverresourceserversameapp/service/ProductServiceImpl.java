@@ -134,7 +134,7 @@ public class ProductServiceImpl implements ProductService {
         if (typeId == null) {
             return null;
         }
-        return brandRepository.getAllByTypesId(typeId, Sort.by(Sort.Direction.fromString(dir), sort));
+        return brandRepository.getAllByIdAfterAndTypesId(1L, typeId, Sort.by(Sort.Direction.fromString(dir), sort));
     }
 
 
@@ -320,7 +320,7 @@ public class ProductServiceImpl implements ProductService {
         Type type = typeRepository.findById(typeId).get();
         Type none = typeRepository.getOneByName("None");
         List<Product> products = productRepository.getAllByTypeId(typeId, Sort.unsorted());
-        List<Brand> brands = brandRepository.getAllByTypesId(typeId, Sort.unsorted());
+        List<Brand> brands = brandRepository.getAllByIdAfterAndTypesId(1L, typeId, Sort.unsorted());
         for (Product product : products) {
             product.setType(none);
         }
