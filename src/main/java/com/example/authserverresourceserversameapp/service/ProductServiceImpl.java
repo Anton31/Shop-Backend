@@ -112,12 +112,10 @@ public class ProductServiceImpl implements ProductService {
     /**
      * gets all types from database connected with products
      *
-     * @param sort parameter of sorting
-     * @param dir  direction of sorting
      * @return list of types
      */
     @Override
-    public List<Type> getProductTypes(String sort, String dir) {
+    public List<Type> getProductTypes() {
         return typeRepository.getProductTypes();
     }
 
@@ -126,15 +124,15 @@ public class ProductServiceImpl implements ProductService {
      * gets all brands from database with particular type id
      *
      * @param typeId id of type
-     * @param dir    direction of sorting
+     *
      * @return list of brands
      */
     @Override
-    public List<Brand> getProductBrands(Long typeId, String sort, String dir) {
+    public List<Brand> getProductBrands(Long typeId) {
         if (typeId == null) {
             return null;
         }
-        return brandRepository.getAllByIdAfterAndTypesId(1L, typeId, Sort.by(Sort.Direction.fromString(dir), sort));
+        return brandRepository.getAllByIdAfterAndTypesId(1L, typeId);
     }
 
 
@@ -320,7 +318,7 @@ public class ProductServiceImpl implements ProductService {
         Type type = typeRepository.findById(typeId).get();
         Type none = typeRepository.getOneByName("None");
         List<Product> products = productRepository.getAllByTypeId(typeId, Sort.unsorted());
-        List<Brand> brands = brandRepository.getAllByIdAfterAndTypesId(1L, typeId, Sort.unsorted());
+        List<Brand> brands = brandRepository.getAllByIdAfterAndTypesId(1L, typeId);
         for (Product product : products) {
             product.setType(none);
         }
