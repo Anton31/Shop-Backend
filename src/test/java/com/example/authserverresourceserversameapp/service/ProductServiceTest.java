@@ -120,7 +120,7 @@ public class ProductServiceTest {
         List<Product> page = new ArrayList<>(products);
         given(productRepository.findAll(Sort.by(Sort.Direction.valueOf("ASC"),
                 "name"))).willReturn(page);
-        products = productService.getProducts(null, null, "name", "ASC");
+        products = productService.getProducts(0L, 0L, "name", "ASC");
 
         assertThat(products.size()).isEqualTo(2);
         assertThat(products.get(0).getId()).isEqualTo(1L);
@@ -151,6 +151,8 @@ public class ProductServiceTest {
         ProductDto dto = new ProductDto();
         dto.setId(null);
         dto.setName("Mercedes S600");
+        given(typeRepository.findById(anyLong())).willReturn(Optional.ofNullable(type));
+        given((brandRepository.findById(anyLong()))).willReturn(Optional.ofNullable(brand));
         given(productRepository.findByName(anyString())).willThrow(new ProductExistsException("Mercedes S600"));
         ProductExistsException exception = assertThrows(ProductExistsException.class,
                 () -> productService.addProduct(dto));
@@ -165,7 +167,7 @@ public class ProductServiceTest {
         List<Type> types = new ArrayList<>();
         types.add(type);
         types.add(type1);
-        given(typeRepository.findAll(any(Sort.class))).willReturn(types);
+        given(typeRepository.getAllByIdAfter(anyLong(), any(Sort.class))).willReturn(types);
         List<Type> serviceTypes = productService.getAllTypes("name", "ASC");
         assertThat(serviceTypes).isNotNull();
         assertThat(serviceTypes.size()).isEqualTo(2);
