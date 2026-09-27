@@ -120,7 +120,7 @@ public class ProductServiceTest {
         List<Product> page = new ArrayList<>(products);
         given(productRepository.findAll(Sort.by(Sort.Direction.valueOf("ASC"),
                 "name"))).willReturn(page);
-        products = productService.getProducts(0L, 0L, "name", "ASC");
+        products = productService.getProducts(null, null, "name", "ASC");
 
         assertThat(products.size()).isEqualTo(2);
         assertThat(products.get(0).getId()).isEqualTo(1L);
