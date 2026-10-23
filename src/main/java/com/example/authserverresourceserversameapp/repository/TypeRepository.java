@@ -12,7 +12,7 @@ public interface TypeRepository extends JpaRepository<Type, Long> {
 
     List<Type> getAllByIdAfter(long id, Sort sort);
 
-    @Query("select t from Product p join p.type t where t.id>1 order by t.name")
-    List<Type> getProductTypes();
+    @Query("select t from Type t where size(t.products)>0 and t.id>1")
+    List<Type> getProductTypes(Sort sort);
 
 }

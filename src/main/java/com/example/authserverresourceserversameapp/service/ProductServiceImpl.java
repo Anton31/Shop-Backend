@@ -116,7 +116,7 @@ public class ProductServiceImpl implements ProductService {
      */
     @Override
     public List<Type> getProductTypes() {
-        return typeRepository.getProductTypes();
+        return typeRepository.getProductTypes(Sort.by(Sort.Direction.ASC, "name"));
     }
 
 
@@ -131,7 +131,7 @@ public class ProductServiceImpl implements ProductService {
         if (typeId == null) {
             return null;
         }
-        return brandRepository.getAllByIdAfterAndTypesId(1L, typeId);
+        return brandRepository.getAllByIdAfterAndTypesId(1L, typeId, Sort.by(Sort.Direction.ASC, "name"));
     }
 
 
@@ -151,6 +151,8 @@ public class ProductServiceImpl implements ProductService {
                 throw new ProductExistsException(dto.getName());
             }
             product = new Product();
+            type.addProduct(product);
+            brand.addProduct(product);
             if (!brand.getTypes().contains(type)) {
                 brand.addType(type);
             }
@@ -158,11 +160,16 @@ public class ProductServiceImpl implements ProductService {
             product = productRepository.findById(dto.getId()).orElseThrow(NoSuchElementException::new);
             Type productType = product.getType();
             Brand productBrand = product.getBrand();
+            if (productType.getId() != type.getId() || productBrand.getId() != brand.getId()) {
+                productType.removeProduct(product);
+                productBrand.removeProduct(product);
+            }
+            type.addProduct(product);
+            brand.addProduct(product);
             productBrand.removeType(productType);
             brand.addType(type);
         }
-        product.setType(type);
-        product.setBrand(brand);
+
         product.setName(dto.getName());
         product.setPrice(dto.getPrice());
         return productRepository.save(product).getId();
@@ -317,7 +324,7 @@ public class ProductServiceImpl implements ProductService {
         Type type = typeRepository.findById(typeId).get();
         Type none = typeRepository.getOneByName("None");
         List<Product> products = productRepository.getAllByTypeId(typeId, Sort.unsorted());
-        List<Brand> brands = brandRepository.getAllByIdAfterAndTypesId(1L, typeId);
+        List<Brand> brands = brandRepository.getAllByIdAfterAndTypesId(1L, typeId, Sort.unsorted());
         for (Product product : products) {
             product.setType(none);
         }
