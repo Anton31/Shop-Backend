@@ -151,25 +151,14 @@ public class ProductServiceImpl implements ProductService {
                 throw new ProductExistsException(dto.getName());
             }
             product = new Product();
-            type.addProduct(product);
-            brand.addProduct(product);
             if (!brand.getTypes().contains(type)) {
                 brand.addType(type);
             }
         } else {
             product = productRepository.findById(dto.getId()).orElseThrow(NoSuchElementException::new);
-            Type productType = product.getType();
-            Brand productBrand = product.getBrand();
-            if (productType.getId() != type.getId() || productBrand.getId() != brand.getId()) {
-                productType.removeProduct(product);
-                productBrand.removeProduct(product);
-            }
-            type.addProduct(product);
-            brand.addProduct(product);
-            productBrand.removeType(productType);
-            brand.addType(type);
         }
-
+        product.setType(type);
+        product.setBrand(brand);
         product.setName(dto.getName());
         product.setPrice(dto.getPrice());
         return productRepository.save(product).getId();
